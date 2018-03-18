@@ -69,6 +69,7 @@ class AdminuserController extends ActiveController
 
 
     /**
+     * 用户登录接口
      * actionLogin
      * @author 黄东 kmdgs@qq.com
      * @return array
