@@ -5,8 +5,10 @@ namespace api\common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 use Firebase\JWT\JWT;
+use yii\web\IdentityInterface;
 use yii\web\Request as WebRequest;
 
 
@@ -30,7 +32,7 @@ use yii\web\Request as WebRequest;
  * @property integer $source
  *
  */
-class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
 
     const ROLE_USER = 10;
@@ -93,7 +95,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 

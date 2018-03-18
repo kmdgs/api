@@ -9,6 +9,7 @@ namespace api\modules\v2\controllers;
 
 
 use yii\filters\ContentNegotiator;
+use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\Response;
 
@@ -21,7 +22,7 @@ class ArticleController extends ActiveController
         unset($behaviors['authenticator']);
 
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 // restrict access to
                 'Access-Control-Request-Method' => ['*'],
@@ -37,7 +38,7 @@ class ArticleController extends ActiveController
         ];
 
         $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON
             ]

@@ -28,9 +28,9 @@ class AdminuserController extends ActiveController
         $behaviors = parent::behaviors();
 
         $behaviors['authenticator'] = [
-            'class' => CompositeAuth::className(), //支持多种认证方法同时操作器
+            'class' => CompositeAuth::class, //支持多种认证方法同时操作器
             'authMethods' => [
-                HttpBearerAuth::className(), //支持基于HTTP承载令牌的认证方法操作器
+                HttpBearerAuth::class, //支持基于HTTP承载令牌的认证方法操作器
             ],
 
         ];
@@ -47,7 +47,7 @@ class AdminuserController extends ActiveController
 
         //跨域资源共享 CORS
         $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 'Access-Control-Request-Method' => ['*'],
                 'Access-Control-Request-Headers' => ['*'],
@@ -59,7 +59,7 @@ class AdminuserController extends ActiveController
 
         //返回数据格式 xml或是 json
         $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON
             ]

@@ -26,13 +26,13 @@ class ArticleController extends ActiveController
 
         //根据access_token进行用户认证
         $behaviors['authenticator']=[
-            'class'=>ApiQueryParamsAuth::className()
+            'class'=>ApiQueryParamsAuth::class
         ];
 
 
 
        $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
                 // restrict access to 限制访问
                 'Access-Control-Request-Method' => ['*'],
@@ -48,7 +48,7 @@ class ArticleController extends ActiveController
         ];
 
         $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON
             ]
