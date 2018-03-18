@@ -40,29 +40,31 @@ class LoginForm extends Model
         ];
     }
 
+
     /**
-     * @inheritdoc
+     *
+     * 验证用户名和密码 用户名和密码不能为空
+     * @author 黄东 kmdgs@qq.com
+     * @return array
      */
     public function rules()
     {
         return [
-            // username and password are both required
             [['username', 'password'], 'required'],
-            // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
     }
 
 
     /**
-     * validatePassword
+     * 验证密码
      * @author 黄东 kmdgs@qq.com
      * @param $attribute
      */
     public function validatePassword($attribute)
     {
         if (!$this->hasErrors()) {
-            $user = $this->getUserByUserName();
+            $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, '用户名或密码错误.');
             }
@@ -71,40 +73,32 @@ class LoginForm extends Model
 
 
     /**
-     * Logs in a user using the provided username and password.
-     *
-     * @return boolean whether the user is logged in successfully
+     * @author 黄东 kmdgs@qq.com
+     * @return bool
      */
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUserByUsername());
+
+            return Yii::$app->user->login($this->getUser());
         }
         return false;
     }
 
 
     /**
-     * getUser
+     * 过用户名获取密码
      * @author 黄东 kmdgs@qq.com
-     * @return mixed
+     * @return null|static
      */
     public function getUser()
-    {
-        return $this->_user;
-    }
-
-
-    /**
-     * getUser
-     * @author 黄东 kmdgs@qq.com
-     * @return \dektrium\user\models\User|null|static
-     */
-    protected function getUserByUserName()
     {
         if ($this->_user === null) {
             $this->_user = User::findByUsername($this->username);
         }
         return $this->_user;
     }
+
+
+
 }

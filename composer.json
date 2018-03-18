@@ -1,0 +1,22 @@
+{
+  "name":"kmdgs/api",
+  "description":"api 接口",
+  "keyowrds":[
+    "yii2",
+    "framework"
+  ],
+  "homepage":"http://www.kemengduo.com",
+  "license": "BSD-3-Clause",
+  "authors":[
+    {
+      "name":"east",
+      "email":"kmdgs@qq.com",
+      "role":"Founder and project lead"
+    }
+  ],
+  "require":{
+    "php": ">=5.5.0",
+    "yiisoft/yii2-composer": "*",
+    "firebase/php-jwt":"*"
+  }
+}

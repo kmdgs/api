@@ -21,29 +21,28 @@ use yii\web\Response;
 
 class AdminuserController extends ActiveController
 {
+    /*
+     * @var 引用用户模型类
+     */
     public $modelClass = 'api\common\models\User';
 
+    /**
+     * 注入行为
+     * behaviors
+     * @author 黄东 kmdgs@qq.com
+     * @return array
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
 
         $behaviors['authenticator'] = [
-            'class' => CompositeAuth::class, //支持多种认证方法同时操作器
+            'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
             'authMethods' => [
-                HttpBearerAuth::class, //支持基于HTTP承载令牌的认证方法操作器
+                HttpBearerAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
             ],
-
+            'except'=>['options', 'login',] //不认证的操作列表
         ];
-
-        $auth = $behaviors['authenticator'];
-        unset($behaviors['authenticator']);
-
-
-        // re-add authentication filter
-        $behaviors['authenticator'] = $auth;
-        // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
-        $behaviors['authenticator']['except'] = ['options', 'login', 'signup',];
-
 
         //跨域资源共享 CORS
         $behaviors['corsFilter'] = [
@@ -70,7 +69,10 @@ class AdminuserController extends ActiveController
 
     /**
      * 用户登录接口
-     * actionLogin
+     * POST参数
+     * LoginForm[username] 用户名
+     * LoginForm[password] 密码
+     * 用户名和密码错误 返回错误数据 状态码码 422
      * @author 黄东 kmdgs@qq.com
      * @return array
      * @throws HttpException
@@ -84,7 +86,7 @@ class AdminuserController extends ActiveController
             $user=$model->getUser();
             $user->generateAccessTokenAfterUpdatingClientInfo(true);
 
-           $response = \Yii::$app->getResponse();
+           $response = Yii::$app->getResponse();
            $response->setStatusCode(200);
            $id = implode(',', array_values($user->getPrimaryKey(true)));
 
@@ -92,9 +94,7 @@ class AdminuserController extends ActiveController
                'id'    =>  (int)$id,
                'access_token' => $user->access_token,
            ];
-
            return $responseData;
-          // return ['status'=>'success','access_token' => $model->login()];
 
         } else {
             $model->validate();
