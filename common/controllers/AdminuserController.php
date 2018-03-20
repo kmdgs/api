@@ -10,7 +10,9 @@ namespace api\common\controllers;
 
 
 use api\common\models\LoginForm;
+use api\common\models\User;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -102,6 +104,20 @@ class AdminuserController extends ActiveController
             $model->validate();
             throw new HttpException(422,json_encode($model->errors));
         }
+    }
+
+    /**
+     * @author 黄东 kmdgs@qq.com
+     * @return ActiveDataProvider
+     */
+    public function actionIndex(){
+        return new ActiveDataProvider([
+            'query' =>  User::find()->where([
+                '!=', 'status', -1
+            ])->andWhere([
+                'role'  =>  User::ROLE_USER
+            ])
+        ]);
     }
 
 

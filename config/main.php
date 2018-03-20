@@ -68,6 +68,7 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/article']],
                 'GET,HEAD site/<id>' => 'site/view',
                 'GET,HEAD article/<id>' => 'article/view',
+                'GET,HEAD adminuser/<id>' => 'adminuser/view',
                 ['class'=>'yii\rest\UrlRule',
                     'controller'=>'adminuser',
                     'except'=>['delete','create','update','view'],

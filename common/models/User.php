@@ -39,7 +39,10 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_STAFF = 50; //工作人员
     const ROLE_ADMIN = 99; //管理员
 
-    const STATUS_DELETED = 0; //禁用
+
+    const STATUS_DELETED = -1; //删除
+    const STATUS_DISABLED = 0; //禁用
+    const STATUS_PENDING = 1; //等待确认
     const STATUS_ACTIVE = 10; //正常
     public $source;
 
@@ -122,6 +125,48 @@ class User extends ActiveRecord implements IdentityInterface
             [['password_reset_token'], 'unique'],
         ];
     }
+
+
+    /**
+     * @author 黄东 kmdgs@qq.com
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = [
+            'id',
+            'username',
+            'email',
+            'last_login_at',
+            'last_login_ip',
+            'confirmed_at',
+            'status',
+            'status_label' => function () {
+                $statusLabel = '';
+                switch ($this->status) {
+                    case self::STATUS_ACTIVE:
+                        $statusLabel = '正常';
+                        break;
+                    case self::STATUS_PENDING:
+                        $statusLabel ='等待确认';
+                        break;
+                    case self::STATUS_DISABLED:
+                        $statusLabel = '禁用';
+                        break;
+                    case self::STATUS_DELETED:
+                        $statusLabel = '删除';
+                        break;
+                }
+                return $statusLabel;
+            },
+            'created_at',
+            'updated_at',
+        ];
+
+        return $fields;
+
+    }
+
 
     /**
      * @inheritdoc
