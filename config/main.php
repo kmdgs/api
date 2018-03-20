@@ -12,11 +12,6 @@ return [
     'controllerNamespace' => 'api\common\controllers',
     'bootstrap' => ['log'],
     'modules' => [
-        //用户管理
-        'user' => [
-            'class' => 'dektrium\user\Module',
-            'enableConfirmation' => false, //是否需要到邮箱确认邮件
-        ],
         //api v1版本
         'v1' => [
             'class' => 'api\modules\v1\Module',

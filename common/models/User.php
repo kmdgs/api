@@ -35,12 +35,12 @@ use yii\web\Request as WebRequest;
 class User extends ActiveRecord implements IdentityInterface
 {
 
-    const ROLE_USER = 10;
-    const ROLE_STAFF = 50;
-    const ROLE_ADMIN = 99;
+    const ROLE_USER = 10; //用户
+    const ROLE_STAFF = 50; //工作人员
+    const ROLE_ADMIN = 99; //管理员
 
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED = 0; //禁用
+    const STATUS_ACTIVE = 10; //正常
     public $source;
 
 
@@ -253,7 +253,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
 
-
         $secret = static::getSecretKey();
         // Decode token and transform it into array.
         // Firebase\JWT\JWT throws exception if token can not be decoded
@@ -345,7 +344,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_DELETED]);
+        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
 

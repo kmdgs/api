@@ -8,6 +8,7 @@ namespace api\common\controllers;
  * @date 2018/2/25 16:07
  */
 
+
 use api\common\models\LoginForm;
 use Yii;
 use yii\filters\auth\CompositeAuth;
@@ -81,6 +82,7 @@ class AdminuserController extends ActiveController
     {
 
         $model = new LoginForm();
+
 
        if ($model->load(Yii::$app->request->post()) && $model->login()) {
             $user=$model->getUser();

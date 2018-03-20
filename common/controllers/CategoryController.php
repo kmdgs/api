@@ -9,6 +9,8 @@ namespace api\common\controllers;
 
 
 
+use api\filter\auth\HttpBearerAuth;
+use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -20,12 +22,16 @@ class CategoryController extends ActiveController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        unset($behaviors['authenticator']);
+
 
         //根据access_token进行用户认证
-        /* $behaviors['authenticator']=[
-             'class'=>ApiQueryParamsAuth::class
-         ];*/
+        $behaviors['authenticator'] = [
+            'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
+            'authMethods' => [
+                HttpBearerAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
+            ],
+        ];
+
 
         $behaviors['corsFilter'] = [
             'class' => Cors::class,

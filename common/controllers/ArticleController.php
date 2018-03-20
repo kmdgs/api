@@ -9,8 +9,8 @@ namespace api\common\controllers;
  */
 
 
-use api\auth\ApiQueryParamsAuth;
-use yii\base\DynamicModel;
+
+use api\filter\auth\ApiQueryParamsAuth;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;

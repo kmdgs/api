@@ -5,7 +5,7 @@
  * @date 2018/3/6 11:38
  */
 
-namespace api\auth;
+namespace api\filter\auth;
 
 
 use yii\filters\auth\QueryParamAuth;
