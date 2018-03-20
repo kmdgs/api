@@ -283,21 +283,11 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByJTI($id)
     {
         /** @var User $user */
-        $user = static::find()->where([
-            '=',
-            'id',
-            $id
-        ])
-            ->andWhere([
-                '=',
-                'status',
-                self::STATUS_ACTIVE
-            ])
-            ->andWhere([
-                '>',
-                'access_token_expired_at',
-                new Expression('NOW()')
-            ])->one();
+        $user = static::find()
+            ->where(['=', 'id', $id])
+            ->andWhere(['=', 'status', self::STATUS_ACTIVE])
+            ->andWhere(['>', 'expire_at', time()])
+            ->one();
         if ($user !== null &&
             ($user->getIsBlocked() == true || $user->getIsConfirmed() == false)
         ) {

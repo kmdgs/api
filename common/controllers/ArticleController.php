@@ -8,8 +8,10 @@ namespace api\common\controllers;
  * @date 2018/2/25 16:07
  */
 
+
 use api\auth\ApiQueryParamsAuth;
 use yii\base\DynamicModel;
+use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -19,19 +21,21 @@ use yii\web\Response;
 class ArticleController extends ActiveController
 {
 
-  public function behaviors()
+    public function behaviors()
     {
         $behaviors = parent::behaviors();
         unset($behaviors['authenticator']);
 
         //根据access_token进行用户认证
-        $behaviors['authenticator']=[
-            'class'=>ApiQueryParamsAuth::class
+        $behaviors['authenticator'] = [
+            'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
+            'authMethods' => [
+                ApiQueryParamsAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
+            ],
         ];
 
 
-
-       $behaviors['corsFilter'] = [
+        $behaviors['corsFilter'] = [
             'class' => Cors::class,
             'cors' => [
                 // restrict access to 限制访问
@@ -62,15 +66,15 @@ class ArticleController extends ActiveController
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
-    public function actions()
+/*    public function actions()
     {
         $actions = parent::actions();
-        $queryParams=\Yii::$app->request->queryParams;
-        $params=['id','title','catid'];
-        $filter=[];
+        $queryParams = \Yii::$app->request->queryParams;
+        $params = ['id', 'title', 'catid'];
+        $filter = [];
         //查询条件
-        foreach ($params as $value){
-            $result = (isset($queryParams[$value])) ? array_merge($filter,[$value=>$queryParams[$value]]) : '';
+        foreach ($params as $value) {
+            $result = (isset($queryParams[$value])) ? array_merge($filter, [$value => $queryParams[$value]]) : '';
         }
 
         $actions['index'] = [
@@ -86,11 +90,11 @@ class ArticleController extends ActiveController
                         ->addRule('title', 'string')
                         ->addRule('catid', 'integer');
                 },
-                'filter'=>$result,
+                'filter' => $result,
             ]
         ];
         return $actions;
-    }
+    }*/
 
 
     public $modelClass = 'api\common\models\ApiArticle';
