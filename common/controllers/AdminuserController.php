@@ -11,12 +11,14 @@ namespace api\common\controllers;
 
 use api\common\models\LoginForm;
 use api\common\models\User;
+use api\filter\auth\HttpBearerAuth;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBearerAuth;
+
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
+use yii\helpers\Json;
 use yii\rest\ActiveController;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -87,11 +89,10 @@ class AdminuserController extends ActiveController
 
 
        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            $user=$model->getUser();
+            $user=$model->user;
             $user->generateAccessTokenAfterUpdatingClientInfo(true);
 
-           $response = Yii::$app->getResponse();
-           $response->setStatusCode(200);
+           Yii::$app->response->setStatusCode(200);
            $id = implode(',', array_values($user->getPrimaryKey(true)));
 
            $responseData = [
@@ -102,7 +103,7 @@ class AdminuserController extends ActiveController
 
         } else {
             $model->validate();
-            throw new HttpException(422,json_encode($model->errors));
+            throw new HttpException(422,Json::encode($model->errors));
         }
     }
 
@@ -119,6 +120,8 @@ class AdminuserController extends ActiveController
             ])
         ]);
     }
+
+
 
 
 }

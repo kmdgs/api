@@ -43,6 +43,7 @@
         {
             $authHeader = $request->getHeaders()->get('Authorization');
 
+
             // Added following lines to support fastcgi issue. 添加一下代码对解决FASTCGI的支持的问题
             // To support this, must update .htaccess as below:  在.htaccess 添加如下代码
             //  # Authorization Headers

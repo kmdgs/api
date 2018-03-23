@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use Firebase\JWT\JWT;
+use yii\helpers\Json;
 use yii\web\IdentityInterface;
 use yii\web\Request as WebRequest;
 
@@ -101,11 +102,11 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+
     /**
-     * @inheritdoc
-     */
-    /**
-     * @inheritdoc
+     * 认证规则
+     * @author 黄东 kmdgs@qq.com
+     * @return array
      */
     public function rules()
     {
@@ -128,6 +129,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
+     * API接口中返回的数据
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
@@ -148,7 +150,7 @@ class User extends ActiveRecord implements IdentityInterface
                         $statusLabel = '正常';
                         break;
                     case self::STATUS_PENDING:
-                        $statusLabel ='等待确认';
+                        $statusLabel = '等待确认';
                         break;
                     case self::STATUS_DISABLED:
                         $statusLabel = '禁用';
@@ -161,6 +163,12 @@ class User extends ActiveRecord implements IdentityInterface
             },
             'created_at',
             'updated_at',
+            'realname',
+            'tel',
+            'tel_at',
+            'photo',
+            'sex',
+            'birthday'
         ];
 
         return $fields;
@@ -227,20 +235,18 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
+     * 生成令牌
      * generateAccessTokenAfterUpdatingClientInfo
      * @author 黄东 kmdgs@qq.com
-     * @param bool $forceRegenerate
+     * @param bool $forceRegenerate 是否再次生成
      * @return bool
      */
     public function generateAccessTokenAfterUpdatingClientInfo($forceRegenerate = false)
     {
-        // 更新登录IP地址和最后登录时间
         $this->last_login_ip = Yii::$app->request->userIP;
         $this->last_login_at = time();
 
-        // 检查登录时间是否过期
         if ($forceRegenerate == true || $this->expire_at == null || (time() > strtotime($this->expire_at))) {
-            // 生成令牌
             $this->generateAccessToken();
         }
         $this->save(false);
@@ -289,6 +295,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
+     * 用户通过JWT登录
      * Logins user by given JWT encoded string. If string is correctly decoded
      * - array (token) must contain 'jti' param - the id of existing user
      * @param  string $accessToken access token to decode
@@ -476,7 +483,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 }
-
 
 
 

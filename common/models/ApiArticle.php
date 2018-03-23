@@ -12,11 +12,19 @@ use common\models\content\content\Article;
 
 class ApiArticle extends Article
 {
-   /* public function fields()
+    public function fields()
     {
         return [
             'id',
             'title',
+            'abstract',
+            'catid',
+            'addtime',
+            'hits',
+            'picurl',
+            'sources',
+            'author',
+            'update_at'
         ];
-    }*/
+    }
 }

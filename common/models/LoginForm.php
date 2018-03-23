@@ -20,6 +20,7 @@ use yii\base\Model;
  * LoginForm get user's login and password, validates them and logs the user in. If user has been blocked, it adds
  * an error to login form.
  *
+ * @property mixed user
  * @author Dmitry Erofeev <dmeroff@gmail.com>
  */
 class LoginForm extends Model

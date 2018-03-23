@@ -11,6 +11,8 @@ namespace api\common\controllers;
 
 
 use api\filter\auth\ApiQueryParamsAuth;
+use Yii;
+use yii\base\DynamicModel;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
@@ -27,26 +29,21 @@ class ArticleController extends ActiveController
         unset($behaviors['authenticator']);
 
         //根据access_token进行用户认证
-        $behaviors['authenticator'] = [
+      /*  $behaviors['authenticator'] = [
             'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
             'authMethods' => [
                 ApiQueryParamsAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
             ],
-        ];
+        ];*/
 
 
         $behaviors['corsFilter'] = [
             'class' => Cors::class,
             'cors' => [
-                // restrict access to 限制访问
                 'Access-Control-Request-Method' => ['*'],
-                // Allow only POST and PUT methods
                 'Access-Control-Request-Headers' => ['*'],
-                // Allow only headers 'X-Wsse'
                 'Access-Control-Allow-Credentials' => true,
-                // Allow OPTIONS caching
                 'Access-Control-Max-Age' => 3600,
-                // Allow the X-Pagination-Current-Page header to be exposed to the browser.
                 'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
             ],
         ];
@@ -66,15 +63,17 @@ class ArticleController extends ActiveController
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
-/*    public function actions()
+    public function actions()
     {
         $actions = parent::actions();
-        $queryParams = \Yii::$app->request->queryParams;
+        $requestParams = Yii::$app->request->queryParams;
         $params = ['id', 'title', 'catid'];
-        $filter = [];
+        $result = [];
         //查询条件
         foreach ($params as $value) {
-            $result = (isset($queryParams[$value])) ? array_merge($filter, [$value => $queryParams[$value]]) : '';
+            if(!empty($requestParams[$value])){
+                $result[$value]=$requestParams[$value];
+            }
         }
 
         $actions['index'] = [
@@ -90,11 +89,11 @@ class ArticleController extends ActiveController
                         ->addRule('title', 'string')
                         ->addRule('catid', 'integer');
                 },
-                'filter' => $result,
+               'filter' => $result,
             ]
         ];
         return $actions;
-    }*/
+    }
 
 
     public $modelClass = 'api\common\models\ApiArticle';
