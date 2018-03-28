@@ -114,4 +114,12 @@ class AdminuserController extends BearerAuthController
     }
 
 
+    /**
+     * 发送短息
+     * @author 黄东 kmdgs@qq.com
+     */
+    public function actionSendmessage(){
+
+    }
+
 }

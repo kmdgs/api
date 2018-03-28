@@ -10,7 +10,7 @@ namespace api\common\controllers;
 
 
 
-class CategoryController extends BearerAuthController
+class CategoryController extends ApiTokenController
 {
 
     public $modelClass = 'api\common\models\ApiCategory';

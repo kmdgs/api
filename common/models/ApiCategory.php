@@ -126,4 +126,47 @@ class ApiCategory extends ActiveRecord
         ];
     }
 
+
+    /**
+     * 返回字段
+     * @author 黄东 kmdgs@qq.com
+     * @return array
+     */
+    public function fields()
+    {
+        return [
+            'id',
+            'name',
+            'keywords',
+            'title',
+            'description',
+            'listnum',
+            'cpicurl',
+            'sum',
+            'aurl',
+            'action',
+            'root',
+            'lft',
+            'rgt',
+            'lvl',
+            'cmoban',
+            'ctime',
+            'address',
+            'ctype',
+            'prize',
+            'nav',//0 不显示 1 头部主导航条 2 尾部导航条 3 都显示
+            'new_windows', //新窗口打开 0 不是 1 是,
+            'list_order', //排序方式  1.更新时间 2 发布时间 3.点击次数 4.ID倒序 5.ID顺序 6.自定义排序
+            'outlink',
+            'english',
+            'istop', //0 否 1 是 栏目综合页显示
+            'siteid',
+            'model'
+        ];
+    }
+
 }
+
+?>
+
+
