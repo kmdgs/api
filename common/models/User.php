@@ -32,6 +32,8 @@ use yii\web\Request as WebRequest;
  * @property integer $last_login_ip,
  * @property integer $source
  * @property integer $role
+ * @property integer $tel
+ * @property integer $tel_at
  *
  */
 class User extends ActiveRecord implements IdentityInterface

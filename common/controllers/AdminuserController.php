@@ -12,6 +12,7 @@ namespace api\common\controllers;
 
 use api\common\models\LoginForm;
 use api\common\models\RegisterForm;
+use common\thirdclass\taobao\Dayu;
 use Yii;
 use yii\helpers\Json;
 use yii\web\ForbiddenHttpException;
@@ -88,7 +89,7 @@ class AdminuserController extends BearerAuthController
     public function actionRegister()
     {
         $model = new RegisterForm();
-        
+
         $model->load(Yii::$app->request->post(),'');
         if ($model->validate() && $model->signup()) {
             // 发送确认邮箱
@@ -109,6 +110,19 @@ class AdminuserController extends BearerAuthController
      * @author 黄东 kmdgs@qq.com
      */
     public function actionSendmessage(){
+        $tel = Yii::$app->request->post('tel');
+        $code = rand(1000, 9999);
+        $cache = Yii::$app->cache;
+        $cache->set($tel, $code, 1800);
+        $message = new Dayu();
+        if (!empty($tel) && Yii::$app->params['snsio'] == 1) {
+            $appkey = Yii::$app->params['snsappkey'];
+            $secret = Yii::$app->params['snssecret'];
+            $webname = Yii::$app->params['webname'];
+            return $message->verification($code, $webname . '手机认证', $tel, 4, $appkey, $secret);
+        } else {
+            return 'error';
+        }
 
     }
 

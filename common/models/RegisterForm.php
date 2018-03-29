@@ -14,7 +14,11 @@ use yii\base\Model;
 class RegisterForm extends Model
 {
     public $username;
+
     public $email;
+
+    public $tel;
+
     public $password;
     /** @var User */
     private $_user = false;
@@ -30,11 +34,16 @@ class RegisterForm extends Model
             ['username', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此用户名已经被占用'],
             ['username', 'string', 'length' => [3, 25]],
             //  ['username', 'match', 'pattern' => '/^[A-Za-z0-9_-]{3,25}$/', 'message' => '您的用户名只能包含字母数字字符、下划线和破折号。'],
-            ['email', 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],
+            /*   ['email', 'trim'],
+               ['email', 'required'],
+               ['email', 'email'],
+               ['email', 'string', 'max' => 255],
+               ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],*/
+            ['tel', 'filter', 'filter' => 'trim'],
+            ['tel', 'required'],
+            ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
+            [['tel'], 'match', 'pattern' => '/^1(3|4|5|7|8)\d{9}$$/', 'message' => '手机号格式输入不正确。'],
+            ['tel', 'required'],
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
         ];
@@ -45,7 +54,9 @@ class RegisterForm extends Model
         return [
             'username' => '用户名',
             'email' => '电子邮箱',
-            'password' => '密码'
+            'password' => '密码',
+            'tel' => '手机号码',
+            'tel_at' => '手机认证时间'
         ];
     }
 
@@ -59,7 +70,9 @@ class RegisterForm extends Model
         if ($this->validate()) {
             $user = new User();
             $user->username = $this->username;
-            $user->email = $this->email;
+            // $user->email = $this->email;
+            $user->tel = $this->tel;
+            $user->tel_at = time();
             $user->role = User::ROLE_USER;
             $user->status = User::STATUS_PENDING;
             $user->setPassword($this->password);
