@@ -9,6 +9,7 @@
 namespace api\common\controllers;
 
 
+use Yii;
 use yii\rest\ActiveController;
 use api\filter\auth\HttpBearerAuth;
 use yii\filters\auth\CompositeAuth;
@@ -18,6 +19,13 @@ use yii\web\Response;
 
 class BearerAuthController extends ActiveController
 {
+
+    //更新场景
+    public $updateScenario='update';
+
+    //新增场景
+    public $createScenario='create';
+
     /**
      * @author 黄东 kmdgs@qq.com
      * @return array
@@ -31,7 +39,7 @@ class BearerAuthController extends ActiveController
             'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
             'authMethods' => [
                 HttpBearerAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
-               // ApiQueryParamsAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
+                // ApiQueryParamsAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
             ],
         ];
 
@@ -61,5 +69,19 @@ class BearerAuthController extends ActiveController
             ]
         ];
         return $behaviors;
+    }
+
+
+    /**
+     * 根据头信息获取用户信息
+     * @author 黄东 kmdgs@qq.com
+     * @return mixed
+     */
+    protected function getUser()
+    {
+        //根据TOKEEN获取当前用户信息
+        $httpbearerauth = new HttpBearerAuth();
+        $this->attachBehavior('getuser', $httpbearerauth);
+        return $this->authenticate(Yii::$app->getUser(), Yii::$app->getRequest(), Yii::$app->getResponse());
     }
 }

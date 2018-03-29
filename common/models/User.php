@@ -111,8 +111,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'password_hash', 'auth_key'], 'required'],
-            [['status', 'expire_at', 'last_login_at', 'created_at', 'updated_at', 'source'], 'integer'],
+            [['realname', 'photo', 'birthday'], 'required','on'=>['update']],
+            [['status', 'expire_at', 'last_login_at', 'created_at', 'updated_at', 'source','birthday'], 'integer'],
             [['username'], 'string', 'max' => 32],
             [['last_login_ip'], 'string', 'max' => 40],
             [
@@ -124,9 +124,18 @@ class User extends ActiveRecord implements IdentityInterface
             [['access_token'], 'unique'],
             [['username'], 'unique'],
             [['password_reset_token'], 'unique'],
+            ['role', 'default', 'value' => self::ROLE_USER],
+            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_STAFF, self::ROLE_ADMIN]],
         ];
     }
 
+
+    public function scenarios()
+    {
+        return [
+            'update' => ['realname','photo','birthday'],
+        ];
+    }
 
     /**
      * API接口中返回的数据
@@ -144,22 +153,16 @@ class User extends ActiveRecord implements IdentityInterface
             'confirmed_at',
             'status',
             'status_label' => function () {
-                $statusLabel = '';
                 switch ($this->status) {
                     case self::STATUS_ACTIVE:
-                        $statusLabel = '正常';
-                        break;
+                        return '正常';
                     case self::STATUS_PENDING:
-                        $statusLabel = '等待确认';
-                        break;
+                        return '等待确认';
                     case self::STATUS_DISABLED:
-                        $statusLabel = '禁用';
-                        break;
+                        return '禁用';
                     case self::STATUS_DELETED:
-                        $statusLabel = '删除';
-                        break;
+                        return '删除';
                 }
-                return $statusLabel;
             },
             'created_at',
             'updated_at',
@@ -168,8 +171,20 @@ class User extends ActiveRecord implements IdentityInterface
             'tel_at',
             'photo',
             'sex',
-            'birthday'
+            'birthday',
+            'role',
+            'role_label' => function () {
+                switch ($this->role) {
+                    case self::ROLE_USER:
+                        return '用户';
+                    case self::ROLE_STAFF:
+                        return '工作人员';
+                    case self::ROLE_ADMIN:
+                        return '管理员';
+                }
+            },
         ];
+
 
         return $fields;
 
@@ -196,7 +211,8 @@ class User extends ActiveRecord implements IdentityInterface
             'created_at' => '创建时间',
             'updated_at' => '最后修改时间',
             'last_login_ip' => '最后登录IP',
-            'source' => '角色'
+            'source' => '角色',
+            'birthday'=>'出生日期'
         ];
     }
 
@@ -447,7 +463,7 @@ class User extends ActiveRecord implements IdentityInterface
         $secret = static::getSecretKey();
         //当前时间
         $currentTime = time();
-        $expire = $currentTime + 86400; // 1 day
+        $expire = $currentTime + 86400; // 1 day 86400
         $request = Yii::$app->request;
         $hostInfo = '';
         // There is also a \yii\console\Request that doesn't have this property

@@ -74,4 +74,7 @@
         {
             $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
         }
+
+
+
     }

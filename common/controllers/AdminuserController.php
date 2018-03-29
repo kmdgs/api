@@ -11,13 +11,12 @@ namespace api\common\controllers;
 
 
 use api\common\models\LoginForm;
-use api\common\models\User;
-use api\filter\auth\HttpBearerAuth;
+use api\common\models\SignupForm;
 use Yii;
-use yii\data\ActiveDataProvider;
-use yii\filters\auth\CompositeAuth;
 use yii\helpers\Json;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 
 class AdminuserController extends BearerAuthController
@@ -26,6 +25,8 @@ class AdminuserController extends BearerAuthController
      * @var 引用用户模型类
      */
     public $modelClass = 'api\common\models\User';
+
+
 
     /**
      * 注入行为
@@ -36,18 +37,12 @@ class AdminuserController extends BearerAuthController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-
-        unset($behaviors['authenticator']);
-        $behaviors['authenticator'] = [
-            'class' => CompositeAuth::class, //引用认证类 复合认证，支持多种认证方式同时操作器
-            'authMethods' => [
-                HttpBearerAuth::class, //引入认证方法 支持基于HTTP承载令牌的认证方法操作器
-            ],
-            'except' => ['options', 'login','register' ] //不认证的操作列表
-        ];
-
+        $behaviors['authenticator']['except'] = ['options', 'login','register','sendmessage'];
         return $behaviors;
     }
+
+
+
 
 
     /**
@@ -81,26 +76,8 @@ class AdminuserController extends BearerAuthController
 
         } else {
             $model->validate();
-            throw new HttpException(422, Json::encode($model->errors));
+            throw new UnprocessableEntityHttpException(Json::encode($model->errors));
         }
-    }
-
-    /**
-     * 返回用户列表
-     * @author 黄东 kmdgs@qq.com
-     * @return ActiveDataProvider
-     */
-    public function actionIndex()
-    {
-        return new ActiveDataProvider([
-            'query' => User::find()->where([
-                '!=',
-                'status',
-                -1
-            ])->andWhere([
-                'role' => User::ROLE_USER
-            ])
-        ]);
     }
 
 
@@ -110,7 +87,19 @@ class AdminuserController extends BearerAuthController
      */
     public function actionRegister()
     {
-
+        $model = new SignupForm();
+        $model->load(Yii::$app->request->post());
+        if ($model->validate() && $model->signup()) {
+            // Send confirmation email
+            $model->sendConfirmationEmail();
+            $response = Yii::$app->getResponse();
+            $response->setStatusCode(201);
+            $responseData = "true";
+            return $responseData;
+        } else {
+            // Validation error
+            throw new HttpException(422, json_encode($model->errors));
+        }
     }
 
 
@@ -120,6 +109,40 @@ class AdminuserController extends BearerAuthController
      */
     public function actionSendmessage(){
 
+    }
+
+
+
+
+    /**
+     * 获取用户本身信息
+     * @author 黄东 kmdgs@qq.com
+     * @return mixed
+     */
+    public function actionMe() {
+        return $this->getUser();
+    }
+
+    /**
+     * 检查用户是否有访问权限　用户只允许访问自己的信息
+     * 根据传递TOKEN获取用户ID判断是否和传递过来的ID相同　
+     * 如果不相同则是其他用户不能访问
+     * @author 黄东 kmdgs@qq.com
+     * @param string $action
+     * @param null $model
+     * @param array $params
+     * @throws ForbiddenHttpException
+     */
+    public function checkAccess($action, $model = null, $params = [])
+    {
+        $user=$this->getUser();
+        if($user->id!=$model->id){
+            switch ($action){
+                case 'view':
+                case 'update':
+                throw new ForbiddenHttpException('您无权访问此用户信息！');
+            }
+        }
     }
 
 }

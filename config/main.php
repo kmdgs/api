@@ -30,13 +30,6 @@ return [
             //是否使用会话持续跨多个请求身份验证状态。设置这个属性是假的如果您的应用程序是无状态的,这通常是基于rest的api
             'enableSession' => false,
         ],
-        /* 'session' => [
-             'name' => 'FRONTENDSESSID',
-             'cookieParams' => [
-                 'httpOnly' => true,
-                 'path' => '/',
-             ],
-         ],*/
         //缓存路径
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -70,11 +63,13 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'adminuser',
-                    'except' => ['delete', 'create', 'update', 'view'],
+                    'except' => ['delete', 'create',  'view','index'],
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST login' => 'login',
                         'GET register' => 'register',
+                        'GET me' => 'me',
+                        'PATCH PUT update'=>'update'
                     ]
 
                 ],
