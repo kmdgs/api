@@ -31,6 +31,7 @@ use yii\web\Request as WebRequest;
  * @property integer $updated_at
  * @property integer $last_login_ip,
  * @property integer $source
+ * @property integer $role
  *
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -111,8 +112,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['realname', 'photo', 'birthday'], 'required','on'=>['update']],
-            [['status', 'expire_at', 'last_login_at', 'created_at', 'updated_at', 'source','birthday'], 'integer'],
+            [['realname', 'photo', 'birthday'], 'required', 'on' => ['update']],
+            [['status', 'expire_at', 'last_login_at', 'created_at', 'updated_at', 'source', 'birthday'], 'integer'],
             [['username'], 'string', 'max' => 32],
             [['last_login_ip'], 'string', 'max' => 40],
             [
@@ -133,7 +134,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function scenarios()
     {
         return [
-            'update' => ['realname','photo','birthday'],
+            'update' => ['realname', 'photo', 'birthday'],
         ];
     }
 
@@ -212,7 +213,7 @@ class User extends ActiveRecord implements IdentityInterface
             'updated_at' => '最后修改时间',
             'last_login_ip' => '最后登录IP',
             'source' => '角色',
-            'birthday'=>'出生日期'
+            'birthday' => '出生日期'
         ];
     }
 
@@ -226,6 +227,25 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     *从密码生成密码散列并将其设置为模型。
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     /**

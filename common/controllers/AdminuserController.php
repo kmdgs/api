@@ -11,7 +11,7 @@ namespace api\common\controllers;
 
 
 use api\common\models\LoginForm;
-use api\common\models\SignupForm;
+use api\common\models\RegisterForm;
 use Yii;
 use yii\helpers\Json;
 use yii\web\ForbiddenHttpException;
@@ -87,18 +87,19 @@ class AdminuserController extends BearerAuthController
      */
     public function actionRegister()
     {
-        $model = new SignupForm();
-        $model->load(Yii::$app->request->post());
+        $model = new RegisterForm();
+        
+        $model->load(Yii::$app->request->post(),'');
         if ($model->validate() && $model->signup()) {
-            // Send confirmation email
-            $model->sendConfirmationEmail();
+            // 发送确认邮箱
+            //$model->sendConfirmationEmail();
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);
             $responseData = "true";
             return $responseData;
         } else {
             // Validation error
-            throw new HttpException(422, json_encode($model->errors));
+            throw new HttpException(422, Json::encode($model->errors));
         }
     }
 

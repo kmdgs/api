@@ -8,9 +8,10 @@
 namespace api\common\models;
 
 
+use Yii;
 use yii\base\Model;
 
-class SignupForm extends Model
+class RegisterForm extends Model
 {
     public $username;
     public $email;
@@ -26,16 +27,25 @@ class SignupForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => '此用户名已经被占用'],
+            ['username', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此用户名已经被占用'],
             ['username', 'string', 'length' => [3, 25]],
             //  ['username', 'match', 'pattern' => '/^[A-Za-z0-9_-]{3,25}$/', 'message' => '您的用户名只能包含字母数字字符、下划线和破折号。'],
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => '此邮箱已经被占用'],
+            ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => '用户名',
+            'email' => '电子邮箱',
+            'password' => '密码'
         ];
     }
 
@@ -48,14 +58,13 @@ class SignupForm extends Model
     {
         if ($this->validate()) {
             $user = new User();
-            $user->username = strtolower($this->username);
+            $user->username = $this->username;
             $user->email = $this->email;
-            $user->unconfirmed_email = $this->email;
             $user->role = User::ROLE_USER;
             $user->status = User::STATUS_PENDING;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-            $user->registration_ip = Yii::$app->request->userIP;
+            $user->last_login_ip = Yii::$app->request->userIP;
             if ($user->save(false)) {
                 $this->_user = $user;
                 return true;
