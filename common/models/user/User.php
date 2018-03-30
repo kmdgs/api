@@ -1,14 +1,18 @@
 <?php
+/**
+ * @link http://www.kemengduo.com/
+ * @author 黄东 kmdgs@qq.com
+ * @date 2018/3/29 17:05
+ */
 
-namespace api\common\models;
+namespace api\common\models\user;
 
 
+use common\models\common\Mycache;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\db\Expression;
 use Firebase\JWT\JWT;
-use yii\helpers\Json;
 use yii\web\IdentityInterface;
 use yii\web\Request as WebRequest;
 
@@ -445,9 +449,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     protected static function getSecretKey()
     {
-        //临时秘钥
-        return 'jwtSecretCode';
-        //return Yii::$app->params['jwtSecretCode'];
+        return Yii::$app->params['jwtSecretCode'];
     }
 
     // 如果你愿意的话
@@ -485,7 +487,7 @@ class User extends ActiveRecord implements IdentityInterface
         $secret = static::getSecretKey();
         //当前时间
         $currentTime = time();
-        $expire = $currentTime + 86400; // 1 day 86400
+        $expire = $currentTime + Mycache::get_cache_time(Yii::$app->params['expireAt']); // 1 day 86400
         $request = Yii::$app->request;
         $hostInfo = '';
         // There is also a \yii\console\Request that doesn't have this property

@@ -10,8 +10,8 @@ namespace api\common\controllers;
  */
 
 
-use api\common\models\LoginForm;
-use api\common\models\RegisterForm;
+use api\common\models\user\LoginForm;
+use api\common\models\user\RegisterForm;
 use common\thirdclass\taobao\Dayu;
 use Yii;
 use yii\helpers\Json;
@@ -25,7 +25,7 @@ class AdminuserController extends BearerAuthController
     /*
      * @var 引用用户模型类
      */
-    public $modelClass = 'api\common\models\User';
+    public $modelClass = 'api\common\models\user\User';
 
 
 
@@ -113,7 +113,7 @@ class AdminuserController extends BearerAuthController
         $tel = Yii::$app->request->post('tel');
         $code = rand(1000, 9999);
         $cache = Yii::$app->cache;
-        $cache->set($tel, $code, 1800);
+        $cache->set($tel, $code, 180000);
         $message = new Dayu();
         if (!empty($tel) && Yii::$app->params['snsio'] == 1) {
             $appkey = Yii::$app->params['snsappkey'];
@@ -123,7 +123,6 @@ class AdminuserController extends BearerAuthController
         } else {
             return 'error';
         }
-
     }
 
 

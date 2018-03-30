@@ -5,7 +5,7 @@
  * @date 2018/3/29 17:05
  */
 
-namespace api\common\models;
+namespace api\common\models\user;
 
 
 use Yii;
@@ -13,12 +13,19 @@ use yii\base\Model;
 
 class RegisterForm extends Model
 {
+    //用户名
     public $username;
 
+    //邮箱
     public $email;
 
+    //手机号
     public $tel;
 
+    //手机验证码
+    public $code;
+
+    //密码
     public $password;
     /** @var User */
     private $_user = false;
@@ -28,7 +35,7 @@ class RegisterForm extends Model
      */
     public function rules()
     {
-        return [
+        $rule = [
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此用户名已经被占用'],
@@ -41,13 +48,36 @@ class RegisterForm extends Model
                ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],*/
             ['tel', 'filter', 'filter' => 'trim'],
             ['tel', 'required'],
-            ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
+           // ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
             [['tel'], 'match', 'pattern' => '/^1(3|4|5|7|8)\d{9}$$/', 'message' => '手机号格式输入不正确。'],
             ['tel', 'required'],
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
         ];
+
+        //是否启用短信接口
+        if (Yii::$app->params['snsio'] == 1) {
+            $rule = array_merge($rule, [['code', 'required'], ['code', 'checkCode'],]);
+        }
+        return $rule;
     }
+
+
+    /**
+     * 检验验证码
+     * @param $attribute
+     */
+    public function checkCode($attribute)
+    {
+        $cache = Yii::$app->cache;
+        $old_code = $cache->get($this->tel);
+        if ($this->code != $old_code) {
+            $this->addError($attribute, '验证码输入错误');
+        }
+    }
+
+
+
 
     public function attributeLabels()
     {
@@ -56,7 +86,8 @@ class RegisterForm extends Model
             'email' => '电子邮箱',
             'password' => '密码',
             'tel' => '手机号码',
-            'tel_at' => '手机认证时间'
+            'tel_at' => '手机认证时间',
+            'code'=>'短信验证码'
         ];
     }
 
@@ -97,6 +128,11 @@ class RegisterForm extends Model
         return $this->_user;
     }
 
+    /**
+     * 发送确认邮件
+     * @author 黄东 kmdgs@qq.com
+     * @return bool
+     */
     public function sendConfirmationEmail()
     {
         $confirmURL = \Yii::$app->params['frontendURL'] . '#/confirm?id=' . $this->_user->id . '&auth_key=' . $this->_user->auth_key;

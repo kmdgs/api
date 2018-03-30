@@ -1,16 +1,11 @@
 <?php
-
-/*
- * This file is part of the Dektrium project.
- *
- * (c) Dektrium project <http://github.com/dektrium/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+/**
+ * @link http://www.kemengduo.com/
+ * @author 黄东 kmdgs@qq.com
+ * @date 2018/3/29 17:05
  */
 
-namespace api\common\models;
-
+namespace api\common\models\user;
 
 use Yii;
 use yii\base\Model;
@@ -99,7 +94,6 @@ class LoginForm extends Model
         }
         return $this->_user;
     }
-
 
 
 }

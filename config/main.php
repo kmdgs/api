@@ -24,7 +24,7 @@ return [
     'components' => [
         'user' => [
             //设置认证类
-            'identityClass' => 'api\common\models\User',
+            'identityClass' => 'api\common\models\user\User',
             //是否基于cookie的登录.
             'enableAutoLogin' => true,
             //是否使用会话持续跨多个请求身份验证状态。设置这个属性是假的如果您的应用程序是无状态的,这通常是基于rest的api
