@@ -11,8 +11,9 @@ namespace api\common\controllers;
 
 
 use api\common\models\user\LoginForm;
+use api\common\models\user\PasswordResetForm;
 use api\common\models\user\RegisterForm;
-use common\thirdclass\taobao\Dayu;
+use api\common\models\user\User;
 use Yii;
 use yii\helpers\Json;
 use yii\web\ForbiddenHttpException;
@@ -28,7 +29,6 @@ class AdminuserController extends BearerAuthController
     public $modelClass = 'api\common\models\user\User';
 
 
-
     /**
      * 注入行为
      * behaviors
@@ -38,13 +38,27 @@ class AdminuserController extends BearerAuthController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator']['except'] = ['options', 'login','register','sendmessage'];
+        $behaviors['authenticator']['except'] = ['options', 'login', 'register', 'sendmessage','passwordreset','captcha'];
         return $behaviors;
     }
 
 
-
-
+    /**
+     * @author 黄东 kmdgs@qq.com
+     * @return array
+     */
+    public function actions()
+    {
+        $actions=parent::actions();
+        $actions['captcha']=[
+            'class' => 'yii\captcha\CaptchaAction',
+            'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            'minLength' => 4,
+            'maxLength' => 4,
+            'backColor'=>0xFFFF00
+        ];
+        return $actions;
+    }
 
     /**
      * 用户登录接口
@@ -62,7 +76,7 @@ class AdminuserController extends BearerAuthController
         $model = new LoginForm();
 
 
-        if ($model->load(Yii::$app->request->post(),'') && $model->login()) {
+        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             $user = $model->user;
             $user->generateAccessTokenAfterUpdatingClientInfo(true);
 
@@ -90,50 +104,90 @@ class AdminuserController extends BearerAuthController
     {
         $model = new RegisterForm();
 
-        $model->load(Yii::$app->request->post(),'');
+        $model->load(Yii::$app->request->post(), '');
         if ($model->validate() && $model->signup()) {
-            // 发送确认邮箱
-            //$model->sendConfirmationEmail();
+            $user = $model->user;
+            $user->generateAccessTokenAfterUpdatingClientInfo(true);
+            $id = implode(',', array_values($user->getPrimaryKey(true)));
+
             $response = Yii::$app->getResponse();
-            $response->setStatusCode(201);
-            $responseData = "true";
+
+            if(!empty($id) && !empty($user->username) && !empty($user->access_token)){
+                $response->setStatusCode(201);
+                $responseData = [
+                    'status'=>'true',
+                    'id' => (int)$id,
+                    'username'=>$user->username,
+                    'access_token' => $user->access_token,
+                ];
+            }else{
+                throw new UnprocessableEntityHttpException('未知错误，用户未注册成功！');
+            }
+
             return $responseData;
         } else {
             // Validation error
-            throw new HttpException(422, Json::encode($model->errors));
+            throw new UnprocessableEntityHttpException(Json::encode($model->errors));
         }
     }
 
 
     /**
-     * 发送短息
+     * 重置密码
+     * @author 黄东 kmdgs@qq.com
+     * @return string
+     * @throws HttpException
+     */
+    public function actionPasswordreset() {
+        $model = new PasswordResetForm();
+        $model->load(Yii::$app->request->post(),'');
+        if ($model->validate() && $model->resetPassword()) {
+            $response = Yii::$app->getResponse();
+            $user=$model->user;
+            if( !empty($user->username) && !empty($user->access_token) ){
+                $response->setStatusCode(201);
+                $responseData = [
+                    'status'=>201,
+                    'username'=>$user->username,
+                    'tel'=>$user->tel,
+                ];
+            }else{
+                throw new UnprocessableEntityHttpException('未知错误，密码未修改成功！');
+            }
+
+            return $responseData;
+
+
+            return $responseData;
+        } else {
+            // Validation error
+            throw new UnprocessableEntityHttpException(Json::encode($model->errors));
+        }
+    }
+
+
+
+    /**
+     * 短信注册发送
+     * 发送类型 post
+     * 参数
+     * type 短信类型 [1=>'活动验证',2=>'变更验证',3=>'登录验证',4=>'注册验证',5=>'身份验证',6=>'登录异常']
+     * tel 电话号码
      * @author 黄东 kmdgs@qq.com
      */
-    public function actionSendmessage(){
-        $tel = Yii::$app->request->post('tel');
-        $code = rand(1000, 9999);
-        $cache = Yii::$app->cache;
-        $cache->set($tel, $code, 180000);
-        $message = new Dayu();
-        if (!empty($tel) && Yii::$app->params['snsio'] == 1) {
-            $appkey = Yii::$app->params['snsappkey'];
-            $secret = Yii::$app->params['snssecret'];
-            $webname = Yii::$app->params['webname'];
-            return $message->verification($code, $webname . '手机认证', $tel, 4, $appkey, $secret);
-        } else {
-            return 'error';
-        }
+    public function actionSendmessage()
+    {
+        return User::sendMessage(Yii::$app->request->post('type'), Yii::$app->request->post('tel'));
     }
 
 
-
-
     /**
-     * 获取用户本身信息
+     * 获取用户本身信息,只能查找用户信息，不能查找管理员信息
      * @author 黄东 kmdgs@qq.com
      * @return mixed
      */
-    public function actionMe() {
+    public function actionMe()
+    {
         return $this->getUser();
     }
 
@@ -149,12 +203,12 @@ class AdminuserController extends BearerAuthController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
-        $user=$this->getUser();
-        if($user->id!=$model->id){
-            switch ($action){
+        $user = $this->getUser();
+        if ($user->id != $model->id) {
+            switch ($action) {
                 case 'view':
                 case 'update':
-                throw new ForbiddenHttpException('您无权访问此用户信息！');
+                    throw new ForbiddenHttpException('您无权访问此用户信息！');
             }
         }
     }

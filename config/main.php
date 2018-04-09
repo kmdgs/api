@@ -36,7 +36,7 @@ return [
             'cachePath' => '@common/runtime/cache',
         ],
 
-        'log' => [
+       /* 'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
@@ -44,7 +44,7 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
-        ],
+        ],*/
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

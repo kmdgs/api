@@ -9,6 +9,7 @@ namespace api\common\models\user;
 
 
 use common\models\common\Mycache;
+use common\thirdclass\taobao\Dayu;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -276,6 +277,8 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
+
+
     /**
      * 生成令牌
      * generateAccessTokenAfterUpdatingClientInfo
@@ -296,21 +299,18 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by password reset token
-     *
+     * 通过电话号码查找用户信息
      * @param string $token password reset token
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
+    public static function findByPasswordResetTel($tel)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
-            return null;
-        }
-
         return static::findOne([
-            'password_reset_token' => $token,
+            'tel' => $tel,
         ]);
     }
+
+
 
     /**
      * Finds out if password reset token is valid
@@ -391,6 +391,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @return bool Whether the user is blocked or not.
+     * 用户是否被锁定
      */
     public function getIsBlocked()
     {
@@ -399,6 +400,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @return bool Whether the user is confirmed or not.
+     * 用户是否已经确认
      */
     public function getIsConfirmed()
     {
@@ -520,6 +522,28 @@ class User extends ActiveRecord implements IdentityInterface
         //用户ID
         $token['jti'] = $this->getJTI();
         return [JWT::encode($token, $secret, static::getAlgo()), $token];
+    }
+
+    /**
+     * 发送短息
+     * @author 黄东 kmdgs@qq.com
+     * @param $type 短信类型
+     * @param $tel 电话号码
+     * @return mixed|\ResultSet|\SimpleXMLElement|string
+     */
+    public static function sendMessage($type,$tel){
+        $code = rand(1000, 9999);
+        $cache = Yii::$app->cache;
+        $cache->set($tel, $code, 180000);
+        $message = new Dayu();
+        if (!empty($tel) && Yii::$app->params['snsio'] == 1) {
+            $appkey = Yii::$app->params['snsappkey'];
+            $secret = Yii::$app->params['snssecret'];
+            $webname = Yii::$app->params['webname'];
+            return $message->verification($code, $webname . '手机认证', $tel, $type, $appkey, $secret);
+        } else {
+            return 'error';
+        }
     }
 
 }

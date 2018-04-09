@@ -103,11 +103,13 @@ class RegisterForm extends Model
             $user->username = $this->username;
             // $user->email = $this->email;
             $user->tel = $this->tel;
-            $user->tel_at = time();
-            $user->role = User::ROLE_USER;
-            $user->status = User::STATUS_PENDING;
-            $user->setPassword($this->password);
-            $user->generateAuthKey();
+            $user->tel_at = time(); //手机号确认时间
+            $user->confirmed_at=time(); //确认时间
+            $user->role = User::ROLE_USER; //用户角色
+            $user->status = User::STATUS_ACTIVE; //账号状态
+            $user->registration_ip= Yii::$app->request->userIP; //注册IP
+            $user->setPassword($this->password); //生成密码
+            $user->generateAuthKey(); //随机生成验证密码
             $user->last_login_ip = Yii::$app->request->userIP;
             if ($user->save(false)) {
                 $this->_user = $user;
