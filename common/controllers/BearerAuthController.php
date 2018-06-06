@@ -1,6 +1,7 @@
 <?php
 /**
  * 验证ACCESS_TOKEN控制器
+ *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
  * @date 2018/3/28 14:41
@@ -21,10 +22,10 @@ class BearerAuthController extends ActiveController
 {
 
     //更新场景
-    public $updateScenario='update';
+    public $updateScenario = 'update';
 
     //新增场景
-    public $createScenario='create';
+    public $createScenario = 'create';
 
     /**
      * @author 黄东 kmdgs@qq.com
@@ -74,6 +75,7 @@ class BearerAuthController extends ActiveController
 
     /**
      * 根据头信息获取用户信息
+     *
      * @author 黄东 kmdgs@qq.com
      * @return mixed
      */

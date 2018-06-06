@@ -22,14 +22,14 @@ use yii\web\Request as WebRequest;
  * This is the model class for table "adminuser".
  *
  * @property integer $id
- * @property string $username
- * @property string $realname
- * @property string $email
+ * @property string  $username
+ * @property string  $realname
+ * @property string  $email
  * @property integer $status
- * @property string $password_hash
- * @property string $auth_key
- * @property string $password_reset_token
- * @property string $access_token
+ * @property string  $password_hash
+ * @property string  $auth_key
+ * @property string  $password_reset_token
+ * @property string  $access_token
  * @property integer $expire_at
  * @property integer $last_login_at
  * @property integer $created_at
@@ -39,7 +39,6 @@ use yii\web\Request as WebRequest;
  * @property integer $role
  * @property integer $tel
  * @property integer $tel_at
- *
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -59,6 +58,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * 获取角色标签
      * getRoleLabel
+     *
      * @author 黄东 kmdgs@qq.com
      * @return string
      */
@@ -113,6 +113,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 认证规则
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
@@ -147,6 +148,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * API接口中返回的数据
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
@@ -227,6 +229,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 验证密码
+     *
      * @author 黄东 kmdgs@qq.com
      * @param $password
      * @return bool
@@ -241,6 +244,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws \yii\base\Exception
      */
     public function setPassword($password)
     {
@@ -266,6 +270,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 生成令牌
+     *
      * @author 黄东 kmdgs@qq.com
      */
     public function generateAccessToken()
@@ -277,11 +282,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-
-
     /**
      * 生成令牌
      * generateAccessTokenAfterUpdatingClientInfo
+     *
      * @author 黄东 kmdgs@qq.com
      * @param bool $forceRegenerate 是否再次生成
      * @return bool
@@ -300,7 +304,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 通过电话号码查找用户信息
-     * @param string $token password reset token
+     *
+     * @param $tel
      * @return static|null
      */
     public static function findByPasswordResetTel($tel)
@@ -309,7 +314,6 @@ class User extends ActiveRecord implements IdentityInterface
             'tel' => $tel,
         ]);
     }
-
 
 
     /**
@@ -331,6 +335,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Store JWT token header items.
+     *
      * @var array
      */
     protected static $decodedToken;
@@ -340,9 +345,10 @@ class User extends ActiveRecord implements IdentityInterface
      * 用户通过JWT登录
      * Logins user by given JWT encoded string. If string is correctly decoded
      * - array (token) must contain 'jti' param - the id of existing user
-     * @param  string $accessToken access token to decode
+     *
+     * @param      $token
+     * @param null $type
      * @return mixed|null          User model or null if there's no user
-     * @throws \yii\web\ForbiddenHttpException if anything went wrong
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -370,6 +376,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds User model using static method findOne
      * Override this method in model if you need to complicate id-management
+     *
      * @param  string $id if of user to search
      * @return mixed       User model
      */
@@ -434,6 +441,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 通过用户名查找用户 删除状态为 0
+     *
      * @author 黄东 kmdgs@qq.com
      * @param $username
      * @return null|static
@@ -446,6 +454,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 令牌秘钥
+     *
      * @author 黄东 kmdgs@qq.com
      * @return string
      */
@@ -462,6 +471,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * JWT生成的加密方式 声明加密的算法
+     *
      * @return string needed algorytm
      */
     public static function getAlgo()
@@ -472,6 +482,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Returns some 'id' to encode to token. By default is current model id.
      * If you override this method, be sure that findByJTI is updated too
+     *
      * @return integer any unique integer identifier of user
      */
     public function getJTI()
@@ -481,6 +492,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Encodes model data to create custom JWT with model.id set in it
+     *
      * @return array encoded JWT
      */
     public function getJWT()
@@ -526,12 +538,14 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * 发送短息
+     *
      * @author 黄东 kmdgs@qq.com
      * @param $type 短信类型
      * @param $tel 电话号码
      * @return mixed|\ResultSet|\SimpleXMLElement|string
      */
-    public static function sendMessage($type,$tel){
+    public static function sendMessage($type, $tel)
+    {
         $code = rand(1000, 9999);
         $cache = Yii::$app->cache;
         $cache->set($tel, $code, 180000);

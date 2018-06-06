@@ -56,6 +56,7 @@ class PasswordResetForm extends Model
 
     /**
      * 检测验证码
+     *
      * @param $attribute
      */
     public function checkCode($attribute)
@@ -81,6 +82,7 @@ class PasswordResetForm extends Model
     /**
      * Resets password.
      * 重置密码
+     *
      * @return bool if password was reset.
      */
     public function resetPassword()

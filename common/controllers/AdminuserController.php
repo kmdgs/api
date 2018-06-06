@@ -4,6 +4,7 @@ namespace api\common\controllers;
 
 /**
  * 用户管理用户登录注册等接口
+ *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
  * @date 2018/2/25 16:07
@@ -32,13 +33,21 @@ class AdminuserController extends BearerAuthController
     /**
      * 注入行为
      * behaviors
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator']['except'] = ['options', 'login', 'register', 'sendmessage','passwordreset','captcha'];
+        $behaviors['authenticator']['except'] = [
+            'options',
+            'login',
+            'register',
+            'sendmessage',
+            'passwordreset',
+            'captcha'
+        ];
         return $behaviors;
     }
 
@@ -49,13 +58,13 @@ class AdminuserController extends BearerAuthController
      */
     public function actions()
     {
-        $actions=parent::actions();
-        $actions['captcha']=[
+        $actions = parent::actions();
+        $actions['captcha'] = [
             'class' => 'yii\captcha\CaptchaAction',
             'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             'minLength' => 4,
             'maxLength' => 4,
-            'backColor'=>0xFFFF00
+            'backColor' => 0xFFFF00
         ];
         return $actions;
     }
@@ -66,6 +75,7 @@ class AdminuserController extends BearerAuthController
      * LoginForm[username] 用户名
      * LoginForm[password] 密码
      * 用户名和密码错误 返回错误数据 状态码码 422
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      * @throws HttpException
@@ -98,7 +108,9 @@ class AdminuserController extends BearerAuthController
 
     /**
      * 用户注册
+     *
      * @author 黄东 kmdgs@qq.com
+     * @throws UnprocessableEntityHttpException
      */
     public function actionRegister()
     {
@@ -112,15 +124,15 @@ class AdminuserController extends BearerAuthController
 
             $response = Yii::$app->getResponse();
 
-            if(!empty($id) && !empty($user->username) && !empty($user->access_token)){
+            if (!empty($id) && !empty($user->username) && !empty($user->access_token)) {
                 $response->setStatusCode(201);
                 $responseData = [
-                    'status'=>'true',
+                    'status' => 'true',
                     'id' => (int)$id,
-                    'username'=>$user->username,
+                    'username' => $user->username,
                     'access_token' => $user->access_token,
                 ];
-            }else{
+            } else {
                 throw new UnprocessableEntityHttpException('未知错误，用户未注册成功！');
             }
 
@@ -134,30 +146,34 @@ class AdminuserController extends BearerAuthController
 
     /**
      * 重置密码
+     *
      * @author 黄东 kmdgs@qq.com
      * @return string
      * @throws HttpException
      */
-    public function actionPasswordreset() {
+    public function actionPasswordreset()
+    {
         $model = new PasswordResetForm();
-        $model->load(Yii::$app->request->post(),'');
+        $model->load(Yii::$app->request->post(), '');
         if ($model->validate() && $model->resetPassword()) {
             $response = Yii::$app->getResponse();
-            $user=$model->user;
-            if( !empty($user->username) && !empty($user->access_token) ){
+            $user = $model->user;
+            if (!empty($user->username) && !empty($user->access_token)) {
                 $response->setStatusCode(201);
                 $responseData = [
-                    'status'=>201,
-                    'username'=>$user->username,
-                    'tel'=>$user->tel,
+                    'status' => 201,
+                    'username' => $user->username,
+                    'tel' => $user->tel,
                 ];
-            }else{
+            } else {
                 throw new UnprocessableEntityHttpException('未知错误，密码未修改成功！');
             }
 
+            /** @var TYPE_NAME $responseData */
             return $responseData;
 
 
+            /** @var TYPE_NAME $responseData */
             return $responseData;
         } else {
             // Validation error
@@ -166,13 +182,13 @@ class AdminuserController extends BearerAuthController
     }
 
 
-
     /**
      * 短信注册发送
      * 发送类型 post
      * 参数
      * type 短信类型 [1=>'活动验证',2=>'变更验证',3=>'登录验证',4=>'注册验证',5=>'身份验证',6=>'登录异常']
      * tel 电话号码
+     *
      * @author 黄东 kmdgs@qq.com
      */
     public function actionSendmessage()
@@ -183,6 +199,7 @@ class AdminuserController extends BearerAuthController
 
     /**
      * 获取用户本身信息,只能查找用户信息，不能查找管理员信息
+     *
      * @author 黄东 kmdgs@qq.com
      * @return mixed
      */
@@ -195,10 +212,11 @@ class AdminuserController extends BearerAuthController
      * 检查用户是否有访问权限　用户只允许访问自己的信息
      * 根据传递TOKEN获取用户ID判断是否和传递过来的ID相同　
      * 如果不相同则是其他用户不能访问
+     *
      * @author 黄东 kmdgs@qq.com
      * @param string $action
-     * @param null $model
-     * @param array $params
+     * @param null   $model
+     * @param array  $params
      * @throws ForbiddenHttpException
      */
     public function checkAccess($action, $model = null, $params = [])

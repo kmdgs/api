@@ -8,9 +8,9 @@
 namespace api\common\models;
 
 
-use common\models\content\content\Article;
 
-class ApiArticle extends Article
+
+class ApiArticle extends \api\models\Article
 {
     public function fields()
     {
@@ -86,4 +86,21 @@ class ApiArticle extends Article
 
         return $filter;
     }
+
+
+    /**
+     * 获取管理内容
+     * extraFields
+     * 黄东 kmdgs@qq.com
+     * 2018/6/6 16:29
+     *
+     * @return array
+     */
+    public function extraFields()
+    {
+        return ['user','side','category'];
+    }
+
+
+
 }

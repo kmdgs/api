@@ -1,6 +1,7 @@
 <?php
 /**
  * 友情链接控制器
+ *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
  * @date 2018/3/28 15:42
@@ -18,6 +19,7 @@ class FriendlinkController extends ApiTokenController
 
     /**
      * 获取友情链接
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */

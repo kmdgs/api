@@ -38,8 +38,8 @@ class LoginForm extends Model
 
 
     /**
-     *
      * 验证用户名和密码 用户名和密码不能为空
+     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
@@ -54,6 +54,7 @@ class LoginForm extends Model
 
     /**
      * 验证密码
+     *
      * @author 黄东 kmdgs@qq.com
      * @param $attribute
      */
@@ -76,6 +77,7 @@ class LoginForm extends Model
     {
         if ($this->validate()) {
 
+            /** @var TYPE_NAME $this */
             return Yii::$app->user->login($this->getUser());
         }
         return false;
@@ -84,6 +86,7 @@ class LoginForm extends Model
 
     /**
      * 过用户名获取密码
+     *
      * @author 黄东 kmdgs@qq.com
      * @return null|static
      */
@@ -92,6 +95,7 @@ class LoginForm extends Model
         if ($this->_user === null) {
             $this->_user = User::findByUsername($this->username);
         }
+        /** @var TYPE_NAME $this */
         return $this->_user;
     }
 

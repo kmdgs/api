@@ -1,6 +1,7 @@
 <?php
 /**
  * 不验证TOKEN控制器
+ *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
  * @date 2018/3/28 14:34
@@ -18,11 +19,17 @@ use yii\web\Response;
 class ApiTokenController extends ActiveController
 {
 
+    /**
+     * behaviors
+     * 黄东 kmdgs@qq.com
+     * 2018/6/6 11:43
+     *
+     * @return array
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
         unset($behaviors['authenticator']);
-
 
         $behaviors['corsFilter'] = [
             'class' => Cors::class,

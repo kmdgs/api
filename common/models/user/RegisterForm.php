@@ -48,7 +48,7 @@ class RegisterForm extends Model
                ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],*/
             ['tel', 'filter', 'filter' => 'trim'],
             ['tel', 'required'],
-           // ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
+            // ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
             [['tel'], 'match', 'pattern' => '/^1(3|4|5|7|8)\d{9}$$/', 'message' => '手机号格式输入不正确。'],
             ['tel', 'required'],
             ['password', 'required'],
@@ -65,6 +65,7 @@ class RegisterForm extends Model
 
     /**
      * 检验验证码
+     *
      * @param $attribute
      */
     public function checkCode($attribute)
@@ -77,8 +78,6 @@ class RegisterForm extends Model
     }
 
 
-
-
     public function attributeLabels()
     {
         return [
@@ -87,13 +86,14 @@ class RegisterForm extends Model
             'password' => '密码',
             'tel' => '手机号码',
             'tel_at' => '手机认证时间',
-            'code'=>'短信验证码'
+            'code' => '短信验证码'
         ];
     }
 
     /**
      * Signs user up.
      * 注册用户
+     *
      * @return boolean the saved model or null if saving fails
      */
     public function signup()
@@ -104,10 +104,10 @@ class RegisterForm extends Model
             // $user->email = $this->email;
             $user->tel = $this->tel;
             $user->tel_at = time(); //手机号确认时间
-            $user->confirmed_at=time(); //确认时间
+            $user->confirmed_at = time(); //确认时间
             $user->role = User::ROLE_USER; //用户角色
             $user->status = User::STATUS_ACTIVE; //账号状态
-            $user->registration_ip= Yii::$app->request->userIP; //注册IP
+            $user->registration_ip = Yii::$app->request->userIP; //注册IP
             $user->setPassword($this->password); //生成密码
             $user->generateAuthKey(); //随机生成验证密码
             $user->last_login_ip = Yii::$app->request->userIP;
@@ -132,6 +132,7 @@ class RegisterForm extends Model
 
     /**
      * 发送确认邮件
+     *
      * @author 黄东 kmdgs@qq.com
      * @return bool
      */
