@@ -3,16 +3,18 @@
  * Created by PhpStorm.
  * User: dong
  * Date: 2018/6/6
- * Time: 16:46
+ * Time: 17:30
  */
 
-namespace api\models;
+namespace api\models\goods;
 
 
 use yii\db\ActiveRecord;
 
-class Category extends ActiveRecord
+class Goods extends ActiveRecord
 {
+
+
     /**
      * tableName
      * 黄东 kmdgs@qq.com
@@ -22,22 +24,21 @@ class Category extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%category}}';
+        return '{{%goods}}';
     }
 
 
     /**
-     * fields
+     * getAttr
      * 黄东 kmdgs@qq.com
-     * 2018/6/6 17:31
+     * 2018/6/6 17:43
      *
-     * @return array
+     * @return \yii\db\ActiveQuery
      */
-    public function fields()
+    public function getAttr()
     {
-        return [
-          'id',
-          'name'
-        ];
+        return $this->hasMany(GoodsAttr::class,
+            ['goods_id' => 'goods_id']);
     }
+
 }
