@@ -52,7 +52,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DISABLED = 0; //禁用
     const STATUS_PENDING = 1; //等待确认
     const STATUS_ACTIVE = 10; //正常
-    public $source;
+    public $role;
 
 
     /**
@@ -65,7 +65,7 @@ class User extends ActiveRecord implements IdentityInterface
     private function getRoleLabel()
     {
         $roleLabel = '';
-        switch ($this->source) {
+        switch ($this->role) {
             case self::ROLE_USER:  //10
                 $roleLabel = '用户';
                 break;
@@ -80,11 +80,25 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
+    /**
+     * allStatus
+     * 黄东 kmdgs@qq.com
+     * 2018/6/7 14:45
+     *
+     * @return array
+     */
     public static function allStatus()
     {
         return [self::STATUS_ACTIVE => '正常', self::STATUS_DELETED => '禁用'];
     }
 
+    /**
+     * getStatusStr
+     * 黄东 kmdgs@qq.com
+     * 2018/6/7 14:45
+     *
+     * @return string
+     */
     public function getStatusStr()
     {
         return $this->status == self::STATUS_ACTIVE ? '正常' : '禁用';
@@ -253,6 +267,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
+     *
+     * @throws \yii\base\Exception
      */
     public function generateAuthKey()
     {
@@ -527,6 +543,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'username' => $this->username,  //用户名
                 'roleLabel' => $this->getRoleLabel(), //角色标签
                 'lastLoginAt' => $this->last_login_at, //最后登录时间
+                'role'=>$this->role,
             ]
         ], static::getHeaderToken());
         //  jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击
@@ -546,11 +563,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function sendMessage($type, $tel)
     {
-        $code = rand(1000, 9999);
+        $code = mt_rand(1000, 9999);
         $cache = Yii::$app->cache;
         $cache->set($tel, $code, 180000);
         $message = new Dayu();
-        if (!empty($tel) && Yii::$app->params['snsio'] == 1) {
+        if (!empty($tel) && Yii::$app->params['regtel'] == 1) {
             $appkey = Yii::$app->params['snsappkey'];
             $secret = Yii::$app->params['snssecret'];
             $webname = Yii::$app->params['webname'];

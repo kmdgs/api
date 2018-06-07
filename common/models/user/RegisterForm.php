@@ -8,11 +8,15 @@
 namespace api\common\models\user;
 
 
+use dektrium\user\traits\ModuleTrait;
 use Yii;
 use yii\base\Model;
 
 class RegisterForm extends Model
 {
+
+    use ModuleTrait;
+
     //用户名
     public $username;
 
@@ -35,10 +39,12 @@ class RegisterForm extends Model
      */
     public function rules()
     {
+
+
         $rule = [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此用户名已经被占用'],
+            ['username', 'unique', 'targetClass' => '\api\models\User', 'message' => '此用户名已经被占用'],
             ['username', 'string', 'length' => [3, 25]],
             //  ['username', 'match', 'pattern' => '/^[A-Za-z0-9_-]{3,25}$/', 'message' => '您的用户名只能包含字母数字字符、下划线和破折号。'],
             /*   ['email', 'trim'],
@@ -94,6 +100,7 @@ class RegisterForm extends Model
      * Signs user up.
      * 注册用户
      *
+     * @throws \yii\base\Exception
      * @return boolean the saved model or null if saving fails
      */
     public function signup()

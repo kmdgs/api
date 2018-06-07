@@ -39,11 +39,7 @@ class ArticleController extends ApiTokenController
             'dataFilter' => [
                 'class' => 'yii\data\ActiveDataFilter',
                 'searchModel' => function () {
-                    return (new DynamicModel(['id' => null, 'title' => null, 'catid' => null]))
-                        ->addRule('id', 'integer')
-                        ->addRule('title', 'trim')
-                        ->addRule('title', 'string')
-                        ->addRule('catid', 'integer');
+                    return ApiArticle::getSearchModel();
                 },
                 'filter' => ApiArticle::getFilterParams($requestParams),
             ]

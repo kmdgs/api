@@ -8,50 +8,59 @@
 namespace api\common\models;
 
 
-
+use yii\base\DynamicModel;
 
 class ApiArticle extends \api\models\Article
 {
+
+    public function rules()
+    {
+        return [
+            [['title'], 'string']
+        ];
+    }
+
+
     public function fields()
     {
         return [
-            'id' ,
+            'id',
             'title',
             'abstract',
             'content',
-            'catid' ,
-            'scatid' ,
-            'addtime' ,
+            'catid',
+            'scatid',
+            'addtime',
             'keywords',
             'titles',
             'discription',
-            'hits' ,
+            'hits',
             'picurl',
-            'aorder' ,
+            'aorder',
             'sources',
-            'flowers' ,
+            'flowers',
             'userid',
             'download',
             'favorite',
-            'comment' ,
-            'share' ,
-            'ischeck' ,
-            'tags' ,
-            'top' ,
+            'comment',
+            'share',
+            'ischeck',
+            'tags',
+            'top',
             'support',
             'against',
-            'flower_person' ,
-            'star' ,
-            'report' ,
+            'flower_person',
+            'star',
+            'report',
             'outurl',
-            'author' ,
-            'vid' ,
+            'author',
+            'vid',
             'headline',
             'home_carousel',
-            'column_carousel' ,
-            'hot'  ,
-            'subtitle' ,
-            'isimport' ,
+            'column_carousel',
+            'hot',
+            'subtitle',
+            'isimport',
             'attachment',
             'siteid',
             'update_at',
@@ -62,31 +71,51 @@ class ApiArticle extends \api\models\Article
 
     /**
      * 根据传递参数生成查询过滤条件
+     *
      * @author 黄东 kmdgs@qq.com
      * @param $requestParams
      * @return array
      */
     public static function getFilterParams($requestParams)
     {
-        $params_eq = ['id','catid'];
-        $parasm_like=['title'];
+        $params_eq = ['id', 'catid'];
+        $parasm_like = ['title', 'abstract'];
         $filter = [];
         //等于查询条件
         foreach ($params_eq as $value) {
-            if(!empty($requestParams[$value])){
-                $filter[$value]=$requestParams[$value];
+            if (!empty($requestParams[$value])) {
+                $filter[$value] = $requestParams[$value];
             }
         }
         //模糊查询条件
         foreach ($parasm_like as $value) {
-            if(!empty($requestParams[$value])){
-                $filter[$value]=['like'=>$requestParams[$value]];
+            if (!empty($requestParams[$value])) {
+                $filter[$value] = ['like' => $requestParams[$value]];
             }
         }
 
         return $filter;
     }
 
+
+    /**
+     * 获取搜索模型
+     * getSearchModel
+     * 黄东 kmdgs@qq.com
+     * 2018/6/7 9:37
+     *
+     * @throws \yii\base\InvalidConfigException
+     * @return DynamicModel
+     */
+    public static function getSearchModel()
+    {
+
+        $model = (new DynamicModel(['id' , 'title' , 'catid', 'abstract']))
+            ->addRule('title', 'trim')
+            ->addRule(['abstract','title'], 'string')
+            ->addRule(['id','catid'],'integer');
+        return $model;
+    }
 
     /**
      * 获取管理内容
@@ -98,9 +127,8 @@ class ApiArticle extends \api\models\Article
      */
     public function extraFields()
     {
-        return ['user','side','category'];
+        return ['user', 'side', 'category'];
     }
-
 
 
 }

@@ -111,6 +111,8 @@ class AdminuserController extends BearerAuthController
      *
      * @author 黄东 kmdgs@qq.com
      * @throws UnprocessableEntityHttpException
+     * @throws \yii\base\Exception
+     * @return array
      */
     public function actionRegister()
     {

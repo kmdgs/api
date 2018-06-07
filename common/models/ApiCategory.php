@@ -110,7 +110,6 @@ class ApiCategory extends ActiveRecord
             'ctime' => '时间',
             'address' => '地点',
             'ctype' => '栏目类型',
-            'prize' => '奖项',
             'nav' => '导航栏显示',//0 不显示 1 头部主导航条 2 尾部导航条 3 都显示
             'new_windows' => '是否新窗口', //新窗口打开 0 不是 1 是,
             'list_order' => '排序方式', //排序方式  1.更新时间 2 发布时间 3.点击次数 4.ID倒序 5.ID顺序 6.自定义排序
@@ -153,7 +152,6 @@ class ApiCategory extends ActiveRecord
             'ctime',
             'address',
             'ctype',
-            'prize',
             'nav',//0 不显示 1 头部主导航条 2 尾部导航条 3 都显示
             'new_windows', //新窗口打开 0 不是 1 是,
             'list_order', //排序方式  1.更新时间 2 发布时间 3.点击次数 4.ID倒序 5.ID顺序 6.自定义排序
