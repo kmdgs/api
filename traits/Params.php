@@ -6,7 +6,7 @@
  * Time: 10:18
  */
 
-namespace api\common\traits;
+namespace api\traits;
 
 
 use yii\helpers\ArrayHelper;

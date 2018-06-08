@@ -12,7 +12,7 @@ namespace api\common\controllers;
 
 
 use api\common\models\ApiArticle;
-use api\common\traits\Params;
+use api\traits\Params;
 use Yii;
 use yii\base\DynamicModel;
 

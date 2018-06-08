@@ -11,7 +11,7 @@ namespace api\common\controllers;
 
 
 use api\common\models\ApiGoods;
-use api\common\traits\Params;
+use api\traits\Params;
 use Yii;
 
 class GoodsController extends ApiTokenController
