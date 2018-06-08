@@ -93,7 +93,6 @@ class ApiArticle extends \api\models\Article
                 $filter[$value] = ['like' => $requestParams[$value]];
             }
         }
-
         return $filter;
     }
 

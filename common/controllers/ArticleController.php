@@ -12,6 +12,7 @@ namespace api\common\controllers;
 
 
 use api\common\models\ApiArticle;
+use api\common\traits\Params;
 use Yii;
 use yii\base\DynamicModel;
 
@@ -19,6 +20,7 @@ use yii\base\DynamicModel;
 class ArticleController extends ApiTokenController
 {
 
+    use Params;
 
     /**
      * 根据传递的参数查询文章列表
@@ -41,7 +43,8 @@ class ArticleController extends ApiTokenController
                 'searchModel' => function () {
                     return ApiArticle::getSearchModel();
                 },
-                'filter' => ApiArticle::getFilterParams($requestParams),
+                'filter' => Params::getFilterParams($requestParams,
+                    ['eq' => ['id', 'catid'], 'like' => ['title', 'abstract']]),
             ]
         ];
         return $actions;
