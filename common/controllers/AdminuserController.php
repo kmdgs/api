@@ -11,6 +11,7 @@ namespace api\common\controllers;
  */
 
 
+use api\common\controllers\core\BearerAuthController;
 use api\common\models\user\LoginForm;
 use api\common\models\user\PasswordResetForm;
 use api\common\models\user\RegisterForm;
@@ -85,19 +86,16 @@ class AdminuserController extends BearerAuthController
 
         $model = new LoginForm();
 
-
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             $user = $model->user;
             $user->generateAccessTokenAfterUpdatingClientInfo(true);
 
             Yii::$app->response->setStatusCode(200);
-            $id = implode(',', array_values($user->getPrimaryKey(true)));
 
-            $responseData = [
-                'id' => (int)$id,
-                'access_token' => $user->access_token,
+            return [
+                'id' => $user->getPrimaryKey(false), //获取用户ID
+                'access_token' => $user->access_token, //后台TOKEN
             ];
-            return $responseData;
 
         } else {
             $model->validate();
@@ -117,12 +115,13 @@ class AdminuserController extends BearerAuthController
     public function actionRegister()
     {
         $model = new RegisterForm();
-
+        $scenario=Yii::$app->request->get('scenario','tel');
+        $model->scenario = $scenario;
         $model->load(Yii::$app->request->post(), '');
         if ($model->validate() && $model->signup()) {
             $user = $model->user;
             $user->generateAccessTokenAfterUpdatingClientInfo(true);
-            $id = implode(',', array_values($user->getPrimaryKey(true)));
+            $id = $user->getPrimaryKey(false);
 
             $response = Yii::$app->getResponse();
 
@@ -130,7 +129,7 @@ class AdminuserController extends BearerAuthController
                 $response->setStatusCode(201);
                 $responseData = [
                     'status' => 'true',
-                    'id' => (int)$id,
+                    'id' => $id,
                     'username' => $user->username,
                     'access_token' => $user->access_token,
                 ];
@@ -144,6 +143,8 @@ class AdminuserController extends BearerAuthController
             throw new UnprocessableEntityHttpException(Json::encode($model->errors));
         }
     }
+
+
 
 
     /**

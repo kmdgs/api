@@ -7,10 +7,11 @@
  * @date 2018/3/28 14:41
  */
 
-namespace api\common\controllers;
+namespace api\common\controllers\core;
 
 
 use Yii;
+use yii\filters\RateLimiter;
 use yii\rest\ActiveController;
 use api\filter\auth\HttpBearerAuth;
 use yii\filters\auth\CompositeAuth;
@@ -69,6 +70,17 @@ class BearerAuthController extends ActiveController
                 'application/json' => Response::FORMAT_JSON
             ]
         ];
+
+
+        $rateLimit = Yii::$app->params['rateLimit'];
+        if(isset($rateLimit['enable']) && $rateLimit['enable']){
+            $behaviors['rateLimiter'] = [
+                'class' => RateLimiter::class,
+                'enableRateLimitHeaders' => true,
+            ];
+        }
+
+
         return $behaviors;
     }
 

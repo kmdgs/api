@@ -1,57 +1,57 @@
 <?php
-
-namespace api\common\controllers;
-
 /**
- * 文章控制器接口
+ * 栏目控制器
  *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
- * @date 2018/2/25 16:07
+ * @date 2018/3/6 15:45
  */
 
+namespace api\common\controllers;
 
-use api\common\controllers\core\ApiTokenController;
-use api\common\models\ApiArticle;
+
+
+use api\common\controllers\core\BearerAuthController;
+use api\common\models\goods\ApiOrder;
 use api\traits\Params;
 use Yii;
 
-
-class ArticleController extends ApiTokenController
+class OrderController extends BearerAuthController
 {
 
     use Params;
 
+
     /**
-     * 根据传递的参数查询文章列表
-     * actions
-     *
      * @author 黄东 kmdgs@qq.com
      * @return array
      */
     public function actions()
     {
         $actions = parent::actions();
+
         $requestParams = Yii::$app->request->queryParams;
 
-        $actions['index'] = [
-            'class' => 'yii\rest\IndexAction',
+
+        $actions['search'] = [
+            'class' => 'api\common\action\order\SearchAction',
+            'user' => $this->getUser(),
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'dataFilter' => [
                 'class' => 'yii\data\ActiveDataFilter',
                 'searchModel' => function () {
-                    return ApiArticle::getSearchModel();
+                    return ApiOrder::getSearchModel();
                 },
                 'filter' => Params::getFilterParams($requestParams,
-                    ['eq' => ['id', 'catid'], 'like' => ['title', 'abstract']]),
+                    ['eq' => ['order_id', 'order_sn']]),
             ]
         ];
         return $actions;
     }
 
+    public $modelClass = 'api\common\models\goods\ApiOrder';
 
-    public $modelClass = 'api\common\models\ApiArticle';
 
 
 }

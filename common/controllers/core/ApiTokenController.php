@@ -7,9 +7,11 @@
  * @date 2018/3/28 14:34
  */
 
-namespace api\common\controllers;
+namespace api\common\controllers\core;
 
 
+use Yii;
+use yii\filters\RateLimiter;
 use yii\rest\ActiveController;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
@@ -48,6 +50,16 @@ class ApiTokenController extends ActiveController
                 'application/json' => Response::FORMAT_JSON
             ]
         ];
+
+
+        $rateLimit = Yii::$app->params['rateLimit'];
+        if(isset($rateLimit['enable']) && $rateLimit['enable']){
+            $behaviors['rateLimiter'] = [
+                'class' => RateLimiter::class,
+                'enableRateLimitHeaders' => true,
+            ];
+        }
+
         return $behaviors;
     }
 }

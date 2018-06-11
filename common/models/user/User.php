@@ -14,6 +14,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use Firebase\JWT\JWT;
+use yii\filters\RateLimitInterface;
 use yii\web\IdentityInterface;
 use yii\web\Request as WebRequest;
 
@@ -40,7 +41,7 @@ use yii\web\Request as WebRequest;
  * @property integer $tel
  * @property integer $tel_at
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface, RateLimitInterface
 {
 
     const ROLE_USER = 10; //用户
@@ -53,6 +54,42 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_PENDING = 1; //等待确认
     const STATUS_ACTIVE = 10; //正常
     public $role;
+
+    public $allowance;
+
+    public $allowance_updated_at;
+
+
+    # 速度控制  6秒内访问3次，注意，数组的第一个不要设置1，设置1会出问题，一定要
+    #大于2，譬如下面  6秒内只能访问三次
+    # 文档标注：返回允许的请求的最大数目及时间，例如，[100, 600] 表示在600秒内最多100次的API调用。
+    public function getRateLimit($request, $action)
+    {
+        $rateLimit = Yii::$app->params['rateLimit'];
+        if (is_array($rateLimit['limit']) && !empty($rateLimit['limit'])) {
+            return $rateLimit['limit'];
+        } else {
+            return [120, 60];
+        }
+
+    }
+
+    # 文档标注： 返回剩余的允许的请求和相应的UNIX时间戳数 当最后一次速率限制检查时。
+    public function loadAllowance($request, $action)
+    {
+        //return [1,strtotime(date("Y-m-d H:i:s"))];
+        //echo $this->allowance;exit;
+        return [$this->allowance, $this->allowance_updated_at];
+    }
+    # allowance 对应user 表的allowance字段  int类型
+    # allowance_updated_at 对应user allowance_updated_at  int类型
+    # 文档标注：保存允许剩余的请求数和当前的UNIX时间戳。
+    public function saveAllowance($request, $action, $allowance, $timestamp)
+    {
+        $this->allowance = $allowance;
+        $this->allowance_updated_at = $timestamp;
+        $this->save();
+    }
 
 
     /**
@@ -155,7 +192,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function scenarios()
     {
-        return [
+        $scenarios=parent::scenarios();
+        return $scenarios+[
             'update' => ['realname', 'photo', 'birthday'],
         ];
     }
@@ -285,7 +323,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
-     * 生成令牌
+     * 用户密码通过后生成令牌
      *
      * @author 黄东 kmdgs@qq.com
      */
@@ -508,15 +546,17 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Encodes model data to create custom JWT with model.id set in it
-     *
+     * 生成令牌JWT
      * @return array encoded JWT
      */
     public function getJWT()
     {
         // 收集所有数据
+        //获取令牌秘钥，后台基本设置中管理
         $secret = static::getSecretKey();
         //当前时间
         $currentTime = time();
+        //令牌过期时间 当前时间+后台设置过期时长
         $expire = $currentTime + Mycache::get_cache_time(Yii::$app->params['expireAt']); // 1 day 86400
         $request = Yii::$app->request;
         $hostInfo = '';
@@ -543,7 +583,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'username' => $this->username,  //用户名
                 'roleLabel' => $this->getRoleLabel(), //角色标签
                 'lastLoginAt' => $this->last_login_at, //最后登录时间
-                'role'=>$this->role,
+                'role' => $this->role,
             ]
         ], static::getHeaderToken());
         //  jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击

@@ -10,7 +10,8 @@
 namespace api\common\controllers;
 
 
-use api\common\models\ApiGoods;
+use api\common\controllers\core\ApiTokenController;
+use api\common\models\goods\ApiGoods;
 use api\traits\Params;
 use Yii;
 
@@ -18,8 +19,6 @@ class GoodsController extends ApiTokenController
 {
 
     use Params;
-
-    public $modelClass = 'api\common\models\ApiGoods';
 
 
     /**
@@ -48,5 +47,9 @@ class GoodsController extends ApiTokenController
         ];
         return $actions;
     }
+
+    public $modelClass = 'api\common\models\goods\ApiGoods';
+
+
 
 }

@@ -54,12 +54,12 @@
                 $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
             }
 
-
             if ($authHeader !== null && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
 
                 $identity = $user->loginByAccessToken($matches[1], get_class($this));
                 if ($identity === null) {
-                    $this->handleFailure($response);
+                    \Yii::$app->response->setStatusCode(401,'您的请求是凭据无效的！');
+                    //$this->handleFailure($response);
                 }
                 return $identity;
             }

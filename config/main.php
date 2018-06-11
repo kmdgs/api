@@ -36,15 +36,15 @@ return [
             'cachePath' => '@common/runtime/cache',
         ],
 
-       /* 'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],*/
+        /* 'log' => [
+             'traceLevel' => YII_DEBUG ? 3 : 0,
+             'targets' => [
+                 [
+                     'class' => 'yii\log\FileTarget',
+                     'levels' => ['error', 'warning'],
+                 ],
+             ],
+         ],*/
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -56,23 +56,34 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'category'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/article']],
                 'GET,HEAD article/<id:\d+>' => 'article/view',
+                'GET,HEAD goods/<id:\d+>' => 'goods/view',
                 'GET,HEAD adminuser/<id:\d+>' => 'adminuser/view',
+                'GET,HEAD order/<id:\d+>' => 'order/view',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'adminuser',
-                    'except' => ['delete', 'create',  'view','index'],
+                    'except' => ['delete', 'create', 'view', 'index'],
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST login' => 'login',
                         'GET register' => 'register',
                         'GET me' => 'me',
-                        'PATCH PUT update'=>'update'
+                        'PATCH PUT update' => 'update'
                     ]
 
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'favorite',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'POST create' => 'create',
+                        'DELETE <id>' => 'delete',
+                        'GET whether' => 'whether',
+                    ]
+                ]
             ],
         ],
 

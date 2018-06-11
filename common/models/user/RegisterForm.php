@@ -29,6 +29,9 @@ class RegisterForm extends Model
     //手机验证码
     public $code;
 
+    //邮箱验证码
+    public $email_code;
+
     //密码
     public $password;
     /** @var User */
@@ -46,28 +49,64 @@ class RegisterForm extends Model
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\api\models\User', 'message' => '此用户名已经被占用'],
             ['username', 'string', 'length' => [3, 25]],
-            //  ['username', 'match', 'pattern' => '/^[A-Za-z0-9_-]{3,25}$/', 'message' => '您的用户名只能包含字母数字字符、下划线和破折号。'],
-            /*   ['email', 'trim'],
-               ['email', 'required'],
-               ['email', 'email'],
-               ['email', 'string', 'max' => 255],
-               ['email', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '此邮箱已经被占用'],*/
+
+            ['email', 'trim'],
+            ['email', 'required', 'on' => ['email']],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\api\models\User', 'message' => '此邮箱已经被占用'],
             ['tel', 'filter', 'filter' => 'trim'],
             ['tel', 'required'],
-            // ['tel', 'unique', 'targetClass' => '\common\models\user\User', 'message' => '手机号已经注册。'],
+            ['tel', 'unique', 'targetClass' => '\api\models\User', 'message' => '手机号已经注册。'],
             [['tel'], 'match', 'pattern' => '/^1(3|4|5|7|8)\d{9}$$/', 'message' => '手机号格式输入不正确。'],
-            ['tel', 'required'],
+            ['tel', 'required', 'on' => ['tel']],
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            ['email_code', 'required', 'on' => ['email']],
+            ['email_code', 'checkEmailCode'],
         ];
 
         //是否启用短信接口
         if (Yii::$app->params['snsio'] == 1) {
-            $rule = array_merge($rule, [['code', 'required'], ['code', 'checkCode'],]);
-        }
+            $rule = array_merge($rule, [['code', 'required', 'on' => ['tel']], ['code', 'checkCode'],]);
+        };
+
         return $rule;
     }
 
+
+    /**
+     * 注册用户场景
+     * scenarios
+     * 黄东 kmdgs@qq.com
+     * 2018/6/11 10:08
+     *
+     * @return array
+     */
+    public function scenarios()
+    {
+        return [
+            'tel' => ['username', 'tel', 'password', 'code'],
+            'email' => ['username', 'email', 'password', 'code'],
+        ];
+    }
+
+
+    /**
+     * checkEmailCode
+     * 黄东 kmdgs@qq.com
+     * 2018/6/11 11:04
+     *
+     * @param $attribute
+     */
+    public function checkEmailCode($attribute)
+    {
+        $cache = Yii::$app->cache;
+        $old_code = $cache->get($this->email);
+        if ($this->email_code != $old_code) {
+            $this->addError($attribute, '验证码输入错误');
+        }
+    }
 
     /**
      * 检验验证码

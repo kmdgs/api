@@ -29,18 +29,24 @@ trait Params
         $filter = [];
         //等于查询条件
 
-        foreach ($params_eq as $value) {
-            if (!empty($requestParams[$value])) {
-                $filter[$value] = $requestParams[$value];
+        if (!empty($params_eq)) {
+            foreach ($params_eq as $value) {
+                if (!empty($requestParams[$value])) {
+                    $filter[$value] = $requestParams[$value];
+                }
             }
         }
 
+
         //模糊查询条件
-        foreach ($parasm_like as $value) {
-            if (!empty($requestParams[$value])) {
-                $filter[$value] = ['like' => $requestParams[$value]];
+        if (!empty($parasm_like)) {
+            foreach ($parasm_like as $value) {
+                if (!empty($requestParams[$value])) {
+                    $filter[$value] = ['like' => $requestParams[$value]];
+                }
             }
         }
+
         return $filter;
     }
 }

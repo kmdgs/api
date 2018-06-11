@@ -10,7 +10,8 @@
 namespace api\common\controllers;
 
 
-use api\common\models\ApiFriendLink;
+use api\common\controllers\core\ApiTokenController;
+use api\traits\Params;
 use Yii;
 use yii\base\DynamicModel;
 
@@ -35,10 +36,11 @@ class FriendlinkController extends ApiTokenController
             'dataFilter' => [
                 'class' => 'yii\data\ActiveDataFilter',
                 'searchModel' => function () {
-                    return (new DynamicModel(['type' => null]))
+                    return (new DynamicModel(['type']))
                         ->addRule('type', 'integer');
                 },
-                'filter' => ApiFriendLink::getFilterParams($requestParams),
+                'filter' => Params::getFilterParams($requestParams,
+                    ['eq' => ['type']]),
             ]
         ];
         return $actions;
