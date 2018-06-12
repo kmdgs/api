@@ -22,34 +22,7 @@ class PosterController extends ApiTokenController
 
     use Params;
 
-    /**
-     * 根据传递的参数查询文章列表
-     * actions
-     *
-     * @author 黄东 kmdgs@qq.com
-     * @return array
-     */
-    public function actions()
-    {
-        $actions = parent::actions();
-        $requestParams = Yii::$app->request->queryParams;
-
-        $actions['indexs'] = [
-            'class' => 'yii\rest\IndexAction',
-            'modelClass' => $this->modelClass,
-            'checkAccess' => [$this, 'checkAccess'],
-            'dataFilter' => [
-                'class' => 'yii\data\ActiveDataFilter',
-                'searchModel' => function () {
-                    return ApiArticle::getSearchModel();
-                },
-                'filter' => Params::getFilterParams($requestParams,
-                    ['eq' => ['id', 'catid'], 'like' => ['title', 'abstract']]),
-            ]
-        ];
-        return $actions;
-    }
-
+   
 
     public $modelClass = 'api\common\models\module\ApiPosterSpace';
 
