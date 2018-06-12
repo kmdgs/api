@@ -3,7 +3,7 @@
 namespace api\common\controllers;
 
 /**
- * 文章控制器接口
+ * 广告接口
  *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
@@ -12,19 +12,11 @@ namespace api\common\controllers;
 
 
 use api\common\controllers\core\ApiTokenController;
-use api\common\models\ApiArticle;
-use api\traits\Params;
-use Yii;
 
 
 class PosterController extends ApiTokenController
 {
 
-    use Params;
-
-   
-
     public $modelClass = 'api\common\models\module\ApiPosterSpace';
-
 
 }

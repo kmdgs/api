@@ -7,9 +7,6 @@
 
 namespace api\common\models\module;
 
-
-use yii\base\DynamicModel;
-
 class ApiPosterSpace extends \api\models\module\PosterSpace
 {
 

@@ -9,7 +9,6 @@
 
 namespace api\common\controllers;
 
-
 use api\common\controllers\core\ApiTokenController;
 
 class CategoryController extends ApiTokenController

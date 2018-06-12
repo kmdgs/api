@@ -1,6 +1,6 @@
 <?php
 /**
- * 栏目控制器
+ * 消息控制器
  *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
@@ -20,12 +20,10 @@ class GrouppmController extends BearerAuthController
 
     use Params;
 
-
     public function actions()
     {
         $actions = parent::actions();
         $requestParams = Yii::$app->request->queryParams;
-
 
         $actions['search'] = [
             'class' => 'api\common\action\message\SearchAction',
@@ -38,12 +36,11 @@ class GrouppmController extends BearerAuthController
                     return ApiGrouppm::getSearchModel();
                 },
                 'filter' => Params::getFilterParams($requestParams,
-                    ['eq' => ['id','typeid']]),
+                    ['eq' => ['id', 'typeid']]),
             ]
         ];
         return $actions;
     }
-
 
 
     public $modelClass = 'api\common\models\message\ApiGrouppm';

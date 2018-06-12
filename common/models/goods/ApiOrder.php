@@ -8,9 +8,6 @@
 
 namespace api\common\models\goods;
 
-
-
-
 use api\models\goods\Order;
 use yii\base\DynamicModel;
 use yii\helpers\Url;

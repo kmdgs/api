@@ -7,13 +7,9 @@
 
 namespace api\common\action\order;
 
-use api\models\goods\Goods;
-use common\models\goods\GoodsAttr;
-use common\models\goods\GoodsAttribute;
+
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\data\DataFilter;
-use yii\helpers\ArrayHelper;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
 

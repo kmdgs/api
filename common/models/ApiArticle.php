@@ -7,7 +7,6 @@
 
 namespace api\common\models;
 
-
 use yii\base\DynamicModel;
 
 class ApiArticle extends \api\models\Article

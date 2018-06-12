@@ -46,8 +46,6 @@ class IndexAction extends \yii\rest\IndexAction
 
         /* @var $modelClass \yii\db\BaseActiveRecord */
         $modelClass = $this->modelClass;
-
-
         $query = $modelClass::find();
 
         $user=$this->user;

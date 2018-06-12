@@ -7,7 +7,6 @@
 
 namespace api\common\models\message;
 
-
 use common\models\user\grouppm\Grouppm;
 use yii\base\DynamicModel;
 

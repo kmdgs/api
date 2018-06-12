@@ -1,6 +1,6 @@
 <?php
 /**
- * 栏目控制器
+ * 商品控制器
  *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
@@ -8,7 +8,6 @@
  */
 
 namespace api\common\controllers;
-
 
 use api\common\controllers\core\ApiTokenController;
 use api\common\models\goods\ApiGoods;
@@ -19,7 +18,6 @@ class GoodsController extends ApiTokenController
 {
 
     use Params;
-
 
     /**
      * @author 黄东 kmdgs@qq.com
@@ -49,7 +47,5 @@ class GoodsController extends ApiTokenController
     }
 
     public $modelClass = 'api\common\models\goods\ApiGoods';
-
-
 
 }

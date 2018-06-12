@@ -1,6 +1,6 @@
 <?php
 /**
- * 栏目控制器
+ * 收藏关注控制器
  *
  * @link http://www.kemengduo.com/
  * @author 黄东 kmdgs@qq.com
@@ -12,8 +12,6 @@ namespace api\common\controllers;
 
 use api\common\controllers\core\BearerAuthController;
 use api\common\models\user\ApiFavorite;
-
-
 use api\traits\Params;
 use common\models\user\Favorite;
 use Yii;
@@ -23,8 +21,6 @@ class FavoriteController extends BearerAuthController
 {
 
     public $modelClass = 'api\common\models\user\ApiFavorite';
-
-
 
 
     /**
@@ -38,7 +34,6 @@ class FavoriteController extends BearerAuthController
     {
         $actions = parent::actions();
         $requestParams = Yii::$app->request->queryParams;
-
 
 
         $actions['index'] = [
@@ -55,14 +50,14 @@ class FavoriteController extends BearerAuthController
                     ['eq' => ['id', 'table', 'siteid']]),
             ]
         ];
-        $actions['create']=[
+        $actions['create'] = [
             'class' => 'api\common\action\favorite\CreateAction',
             'user' => $this->getUser(),
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->createScenario,
         ];
-        $actions['delete']=[
+        $actions['delete'] = [
             'class' => 'api\common\action\favorite\DeleteAction',
             'user' => $this->getUser(),
             'modelClass' => $this->modelClass,
@@ -81,9 +76,10 @@ class FavoriteController extends BearerAuthController
      * @param string $table
      * @return array|int|string
      */
-    public function actionWhether($id,$table='article'){
-        $user=$this->getUser();
-        return ['result'=>Favorite::find()->where(['userid'=>$user->id])->andWhere(['id'=>$id])->andWhere(['table'=>$table])->count()];
+    public function actionWhether($id, $table = 'article')
+    {
+        $user = $this->getUser();
+        return ['result' => Favorite::find()->where(['userid' => $user->id])->andWhere(['id' => $id])->andWhere(['table' => $table])->count()];
     }
 
 
