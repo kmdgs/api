@@ -83,7 +83,8 @@ return [
                         'DELETE <id>' => 'delete',
                         'GET whether' => 'whether',
                     ]
-                ]
+                ],
+                'GET,HEAD poster/<id:\d+>' => 'poster/view',
             ],
         ],
 

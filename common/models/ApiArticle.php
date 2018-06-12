@@ -21,53 +21,6 @@ class ApiArticle extends \api\models\Article
     }
 
 
-    public function fields()
-    {
-        return [
-            'id',
-            'title',
-            'abstract',
-            'content',
-            'catid',
-            'scatid',
-            'addtime',
-            'keywords',
-            'titles',
-            'discription',
-            'hits',
-            'picurl',
-            'aorder',
-            'sources',
-            'flowers',
-            'userid',
-            'download',
-            'favorite',
-            'comment',
-            'share',
-            'ischeck',
-            'tags',
-            'top',
-            'support',
-            'against',
-            'flower_person',
-            'star',
-            'report',
-            'outurl',
-            'author',
-            'vid',
-            'headline',
-            'home_carousel',
-            'column_carousel',
-            'hot',
-            'subtitle',
-            'isimport',
-            'attachment',
-            'siteid',
-            'update_at',
-            'reject',
-        ];
-    }
-
 
     /**
      * 根据传递参数生成查询过滤条件
