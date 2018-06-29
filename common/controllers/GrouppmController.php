@@ -18,7 +18,6 @@ use Yii;
 class GrouppmController extends BearerAuthController
 {
 
-    use Params;
 
     public function actions()
     {

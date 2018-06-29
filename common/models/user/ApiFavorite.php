@@ -17,6 +17,22 @@ class ApiFavorite extends Favorite
 
 
     /**
+     * fields
+     * 黄东 kmdgs@qq.com
+     * 2018/6/12 17:38
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+        // 删除一些包含敏感信息的字段
+        unset($fields['userid'],$fields['dateline'],$fields['spaceuid'],$fields['siteid']);
+
+        return $fields;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()

@@ -17,7 +17,6 @@ use Yii;
 class OrderController extends BearerAuthController
 {
 
-    use Params;
 
     /**
      * @author 黄东 kmdgs@qq.com

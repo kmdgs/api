@@ -10,25 +10,16 @@ namespace api\common\models\module;
 class ApiPosterSpace extends \api\models\module\PosterSpace
 {
 
+
+
     public function fields()
     {
-        return [
-            'spaceid',
-            'siteid',
-            'name',
-            'type',
-            'path',
-            'width',
-            'height',
-            'setting',
-            'description',
-            'items',
-            'disabled',
-            'example',
-            'rows',
-        ];
-    }
+         $fields = parent::fields();
+         // 删除一些包含敏感信息的字段
+         unset($fields['example'],$fields['description'],$fields['name']);
 
+        return $fields;
+    }
 
     /**
      * 获取管理内容

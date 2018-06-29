@@ -22,11 +22,62 @@ use yii\web\Response;
 class BearerAuthController extends ActiveController
 {
 
+
     //更新场景
     public $updateScenario = 'update';
 
     //新增场景
     public $createScenario = 'create';
+
+
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'index' => [
+                'class' => 'api\action\IndexAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'view' => [
+                'class' => 'api\action\ViewAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'create' => [
+                'class' => 'api\action\CreateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->createScenario,
+            ],
+            'update' => [
+                'class' => 'api\action\UpdateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->updateScenario,
+            ],
+            'delete' => [
+                'class' => 'api\action\DeleteAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'options' => [
+                'class' => 'api\action\OptionsAction',
+            ],
+        ];
+    }
+
+
+
+
+
+
+
+
 
     /**
      * @author 黄东 kmdgs@qq.com

@@ -8,10 +8,8 @@
 
 namespace api\models;
 
-
 use common\models\content\content\ArticleSide;
 use yii\db\ActiveRecord;
-
 
 class Article extends ActiveRecord
 {

@@ -8,7 +8,6 @@
 
 namespace api\models\goods;
 
-
 use yii\db\ActiveRecord;
 
 class Goods extends ActiveRecord

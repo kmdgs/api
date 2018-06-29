@@ -36,7 +36,7 @@ return [
             'cachePath' => '@common/runtime/cache',
         ],
 
-       
+
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

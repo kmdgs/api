@@ -56,7 +56,7 @@ class CreateAction extends \yii\rest\CreateAction
             $id = implode(',', array_values($model->getPrimaryKey(true)));
             $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
         } elseif (!$model->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+            throw new ServerErrorHttpException('未知原因创建对象失败.');
         }
 
         return $model;
