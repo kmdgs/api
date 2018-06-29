@@ -2,3 +2,5 @@
 npm init 
 安装包
 npm i webpack vue vue-loader
+安装依赖
+npm i css-loader vue-template-compiler
