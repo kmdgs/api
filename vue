@@ -10,3 +10,5 @@ npm i css-loader vue-template-compiler
 npm i stylus-loader stylus
 
 npm i cross-env
+
+npm i html-webpack-plugin
