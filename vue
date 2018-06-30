@@ -6,3 +6,5 @@ npm i webpack vue vue-loader
 npm i css-loader vue-template-compiler
 
  npm i style-loader url-loader file-loader
+
+npm i stylus-loader stylus
