@@ -8,3 +8,5 @@ npm i css-loader vue-template-compiler
  npm i style-loader url-loader file-loader
 
 npm i stylus-loader stylus
+
+npm i cross-env
